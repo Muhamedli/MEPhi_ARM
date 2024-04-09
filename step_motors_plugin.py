@@ -2,43 +2,37 @@ from machine import Pin, ADC
 from time import sleep
 #import _thread
 
-encoder_angle = 360                       #угол раствора энкодера
-keyboard_input = 0                      #режим ввода угла поворота
-delay = 0.00001                           #задержка между шагами         
+encoder_angle = 360                         #угол раствора энкодера
+keyboard_input = 1                          #режим ввода угла поворота (1-клавиатура)
+delay = 0.001                               #задержка между шагами         
 
-DIR_1 = Pin(4, Pin.OUT)                 # направление движения 1 - по часовой, 0 - против
-STEP_1 = Pin(2, Pin.OUT)                # один шаг двигателя
-INPUT_1 = ADC(Pin(26))                  # подключение пина для ручки
-INPUT_1.atten(ADC.ATTN_11DB)
+DIR_1 = Pin(0, Pin.OUT)                     # направление движения 1 - по часовой, 0 - против
+STEP_1 = Pin(4, Pin.OUT)                    # один шаг двигателя                 
 
-DIR_2 = Pin(5, Pin.OUT)
-STEP_2 = Pin(18, Pin.OUT)
-INPUT_2 = ADC(Pin(27))
-INPUT_2.atten(ADC.ATTN_11DB)
+DIR_2 = Pin(32, Pin.OUT)
+STEP_2 = Pin(33, Pin.OUT)
 
-'''
-DIR_3 = Pin(..., Pin.OUT)
-STEP_3 = Pin(..., Pin.OUT)
+DIR_3 = Pin(25, Pin.OUT)
+STEP_3 = Pin(26, Pin.OUT)
 
-DIR_4 = Pin(..., Pin.OUT)
-STEP_4 = Pin(..., Pin.OUT)
-'''
+DIR_4 = Pin(27, Pin.OUT)
+STEP_4 = Pin(14, Pin.OUT)
 
-#DIR = [DIR_1, DIR_2, DIR_3, DIR_4, DIR_5, DIR_6]
-#STEP = [STEP_1, STEP_2, STEP_3, STEP_4, STEP_5, STEP_6]
+DIR_5 = Pin(12, Pin.OUT)
+STEP_5 = Pin(13, Pin.OUT)
 
-DIR = [DIR_1, DIR_2]
-STEP = [STEP_1, STEP_2]
-INPUT = [INPUT_1, INPUT_2]
+DIR_6 = Pin(2, Pin.OUT)
+STEP_6 = Pin(15, Pin.OUT)
 
 
-Motors_steps_in_deegres = [0.1125, 0.1125, 0.05625, 0.05625, 0.05625, 0.05625]    # градус на один шаг
+DIR = [DIR_1, DIR_2, DIR_3, DIR_4, DIR_5, DIR_6]
+STEP = [STEP_1, STEP_2, STEP_3, STEP_4, STEP_5, STEP_6]
+
+#DIR = [DIR_1, DIR_2]
+#STEP = [STEP_1, STEP_2]
 
 
-motors_number = len(STEP)
-
-MOTOR_current_position = [0 for i in range(motors_number)]
-
+Motors_steps_in_deegres = [0.05625, 0.05625, 0.05625, 0.05625, 0.05625, 0.05625]    # градус на один шаг
 
 '''
 for DRV8825
@@ -61,50 +55,50 @@ MS1 MS2 MS3 steps
 1   1   1   0.1125  (+)
 '''
 
+motors_number = len(STEP)
+
+MOTOR_current_position = [0 for i in range(motors_number)]
+
+
+
 def recvie_angle():                                                                     #получение угла поворта
     global MOTOR_current_position
-    conflict = 0
     
     if keyboard_input:
         input_data = list(map(int, input('угол?\n').split(' ')))                        #обработка данных с клавиатуры
-    else:
-        input_data = list(map(lambda x: x.read()*(encoder_angle/4095) - encoder_angle/2, INPUT)) #обработка данных с энкодера
     
-    for j in range(motors_number):
-        if INPUT[j] != MOTOR_current_position[j]:
-            conflict = 1
-    
-    if conflict:
-        angle_processing(input_data)
+    angle_processing(input_data)
+
 
 def angle_processing(input_data):
-    global MOTOR_deg
+    global MOTOR_current_position
     
     now = MOTOR_current_position
-    new_deg = input_data                                                        # новое положение мотора после поворота ручки
+    new_angle = input_data                                                              # новое положение мотора после поворота ручки
     
-    rotation_angle = [abs(new_deg[i] - now[i]) for i in range(motors_number)]
-    rotation_direction = [new_deg[i] >= now[i] for i in range(motors_number)]
+    rotation_angle = [abs(new_angle[i] - now[i]) for i in range(motors_number)]         #угол, на который нужно повернуть
+    rotation_direction = [new_angle[i] >= now[i] for i in range(motors_number)]         #направление, в котором нужно повернуть
 
     steps(rotation_direction, rotation_angle)
     
     MOTOR_current_position = input_data
     
-    sleep(0.1)
+    sleep(0.01)
 
-def steps(rotation_direction, degrees):                           # шаги : направление и количество шагов по 1,8 градусов
+
+def steps(rotation_direction, degrees):                                                 # шаги : направление и количество шагов по 1,8 градусов
     count_of_steps = [round(degrees[i] / Motors_steps_in_deegres[i]) for i in range(motors_number)]
     
     for index in range(motors_number):
-        DIR[index].value(rotation_direction[index])                                 # установка направления
+        DIR[index].value(rotation_direction[index])                                     # установка направления
     
     while sum(count_of_steps) > 0:
         for index in range(motors_number):
             if count_of_steps[index] > 0:
-                STEP[index].value(1)                                    # подать напряжение на мотор
-                sleep(delay)                                           # задержка 0,01 секунда
-                STEP[index].value(0)                                    # снять напряжение с мотора
-                sleep(delay)                                           # чем быстрее идет смена подачи напрядения, тем выше скорость поворота
+                STEP[index].value(1)                                                    # подать напряжение на мотор
+                sleep(delay)                                                            # задержка 0,01 секунда
+                STEP[index].value(0)                                                    #снять напряжение с мотора
+                sleep(delay)                                                            #чем быстрее идет смена подачи напрядения, тем выше скорость поворота
                 count_of_steps[index] -= 1
 
 #main
@@ -113,4 +107,5 @@ def steps(rotation_direction, degrees):                           # шаги : �
 
 while True:
     recvie_angle()
+
 
