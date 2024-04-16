@@ -3,7 +3,7 @@ from time import sleep
 #import _thread
 
 encoder_angle = 360                         #угол раствора энкодера
-keyboard_input = 1                          #режим ввода угла поворота (1-клавиатура)
+keyboard_input = 0                          #режим ввода угла поворота (1-клавиатура)
 delay = 0.001                               #задержка между шагами         
 
 DIR_1 = Pin(0, Pin.OUT)                     # направление движения 1 - по часовой, 0 - против
@@ -67,6 +67,10 @@ def recvie_angle():                                                             
     if keyboard_input:
         input_data = list(map(int, input('угол?\n').split(' ')))                        #обработка данных с клавиатуры
     
+    else:
+        input_data = [90, 90, 90, 90, 90, 90]
+
+
     angle_processing(input_data)
 
 
@@ -107,5 +111,4 @@ def steps(rotation_direction, degrees):                                         
 
 while True:
     recvie_angle()
-
 
