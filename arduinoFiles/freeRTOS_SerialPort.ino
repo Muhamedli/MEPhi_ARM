@@ -22,7 +22,7 @@ struct motorData                                                                
 
 struct taskPackage                                                                //структура для передачи пакета данных на мотор
 {
-    int degrees;
+    float degrees;
     int speed;
     int accseleration;
 };
@@ -67,7 +67,7 @@ void stepperMotor(void *pvParametrs){                                           
             delay((int)(500/(float) (currentTask.speed/motorInfo->degPerStep)));
             digitalWrite(motorInfo -> pinStep, LOW);
             delay((int)(500/(float) currentTask.speed/motorInfo->degPerStep));
-            currentTask.steps--;
+            currentTask.degrees-=motorInfo->degPerStep;
         }
         delay(10);
     }
