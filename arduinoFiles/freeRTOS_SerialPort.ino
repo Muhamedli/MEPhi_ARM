@@ -4,7 +4,7 @@
 #define DIR2 32
 #define FREQ 20                                                                   //частота подачи сигнал на управляющий пин(для веб-управления)
 #define MOTORNUM 2                                                                //колличество моторов
-#define DATAPACKLENGTH 2                                                          //колличество данных, передающихся на один мотор
+#define DATAPACKLENGTH 1                                                          //колличество данных, передающихся на один мотор
 
 SemaphoreHandle_t sem1;                                     
 SemaphoreHandle_t sem2;
