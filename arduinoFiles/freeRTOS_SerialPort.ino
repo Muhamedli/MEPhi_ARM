@@ -86,10 +86,11 @@ void gatekeeper(void *pvParametrs){
                     switch (j)
                     {
                     case 0:
-                        wrightingFlag = incomingByte;
+                        currentTask.degrees = incomingByte;
                         break;
                     case 1:
-                        currentTask.degrees = incomingByte;
+                        wrightingFlag = incomingByte;
+                        break;
                     default:
                         break;
                     }
