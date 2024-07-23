@@ -113,6 +113,7 @@ void gatekeeper(void *pvParametrs){
                         currentTask.degrees = incomingByte;
                     case 2:
                         currentTask.speed = incomingByte*DEGPERSTEP;
+                        break;
                     default:
                         break;
                     }
