@@ -9,14 +9,14 @@ GStepper<STEPPER2WIRE> stepper5(200 * 16 * 6, 26, 25);
 GStepper<STEPPER2WIRE> stepper6(200 * 16 * 50, 33, 32);
 
 float Max_speed_stepper1 = 15.0;
-float Max_speed_stepper2 = 10.0; // X
+float Max_speed_stepper2 = 10.0;
 float Max_speed_stepper3 = 15.0;
 float Max_speed_stepper4 = 25.0;
 float Max_speed_stepper5 = 15.0;
 float Max_speed_stepper6 = 20.0;
 
 float accel_stepper1 = 7.5;
-float accel_stepper2 = 10.0; // X
+float accel_stepper2 = 10.0;
 float accel_stepper3 = 7.5;
 float accel_stepper4 = 15.0;
 float accel_stepper5 = 10.0;
@@ -24,8 +24,9 @@ float accel_stepper6 = 10.0;
 
 float pos[6] = { 0.0, 0.0, 0.0, 0.0, 0.0, 0.0 };
 
+bool isReadyAnnounced = false;
+
 void setup() {
-  
   stepper1.setRunMode(FOLLOW_POS);     // режим поддержания скорости
   stepper1.setMaxSpeedDeg(Max_speed_stepper1);  // в градусах/сек
   stepper1.setAccelerationDeg(accel_stepper1);
@@ -61,7 +62,6 @@ void setup() {
 // Для указания абсолютной позиции в градусах. То есть, указываешь 90, он повернулся и остановился. 
 // Если ему еще раз указать 90, то он не сдвинеться, так как он уже находится в данной позиции. 
 void GO_ABSOLUTE(){ 
-  
   if (!stepper1.tick()) {
     stepper1.setTargetDeg(pos[0], ABSOLUTE);
   }
@@ -93,14 +93,11 @@ void Split_ABSOLUTE(String data, float mass[]) {
     }
   }
   mass[t] = data.substring(j).toFloat();
-  //
-  mass[1] = 0.0;
-  //
 }
 void InputData_ABSOLUTE() {
   if (Serial.available() > 1) {
+    isReadyAnnounced = false;
     String COM_port = Serial.readString();
-    
     if(COM_port == "stop"){
       stepper1.brake();
       stepper2.brake();
@@ -108,23 +105,21 @@ void InputData_ABSOLUTE() {
       stepper4.brake();
       stepper5.brake();
       stepper6.brake();
-
     }
-
     else{
       Split_ABSOLUTE(COM_port, pos);
     }
   }
 }
-// в разработке
 void OutputData(){
-  if (!stepper1.tick() && !stepper2.tick() && !stepper3.tick() && !stepper4.tick() && !stepper5.tick() && !stepper6.tick()) {
+  if (!isReadyAnnounced && !stepper1.tick() && !stepper2.tick() && !stepper3.tick() && !stepper4.tick() && !stepper5.tick() && !stepper6.tick()) {
     Serial.print('1');
+    isReadyAnnounced = true;
   }
 }
 
 void loop() {
   GO_ABSOLUTE();
-  //OutputData();
+  OutputData();
   InputData_ABSOLUTE();
 }
