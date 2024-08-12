@@ -1,3 +1,9 @@
+"""
+
+код был написан для отладки тестовой сборки электроники; для монтроллера под управлением micropython
+
+"""
+
 from machine import Pin, ADC
 from time import sleep
 #import _thread
