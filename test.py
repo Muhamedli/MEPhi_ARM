@@ -36,7 +36,7 @@ for i in range(step - 1):
         velocity_array[i][k] = (cartesian_sol.q[i + 1][k] - cartesian_sol.q[i][
             k]) / time_point_interval  # вычисление обобщенных скоростей в осях для каждой точки траектории
 np.set_printoptions(precision=3, linewidth=100, suppress=True)
-print(velocity_array)
+# print(velocity_array)
 
 for i in cartesian_sol.q:
     # goal_ax = sg.Axes(0.1, pose=robot.fkine(i))
