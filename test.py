@@ -24,9 +24,9 @@ for i in traj1.q:  # for each joint configuration on trajectory
 Tep2 = robot.fkine(robot.q) * sm.SE3.Trans(0.2, 0, 0) * sm.SE3.OA([0, 1, 0], [0, 0, 1])  # Задание целевой позы
 goal_ax = sg.Axes(0.1, pose=Tep2)  # построение системы координат в ней
 env.add(goal_ax)
-step = 50  # кол-во точек разбиения траектории
+time_point_interval = 0.02  # кол-во точек разбиения траектории
 time = 1  # время прохождения траектории
-time_point_interval = time / step
+step = int(time / time_point_interval)
 traj2 = rtb.tools.trajectory.ctraj(Tep1, Tep2, step)  # построение траектории
 cartesian_sol = robot.ikine_LM(traj2)  # получение обобщенных координат каждой точки траектории
 # print(cartesian_sol.q)
