@@ -27,7 +27,7 @@ for el in array:
     sol2 = robot.ik_LM(Tep2)
     goal_ax = sg.Axes(0.1, pose=Tep2)
     env.add(goal_ax)
-    traj2 = rtb.tools.trajectory.jtraj(sol1[0], sol2[0], 25)
+    traj2 = rtb.tools.trajectory.mtraj(rtb.trapezoidal, sol1[0], sol2[0], 25)
     for i in traj2.q:
         goal_ax = sg.Axes(0.1, pose=robot.fkine(i))
         env.add(goal_ax)

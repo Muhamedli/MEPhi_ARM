@@ -36,7 +36,7 @@ for i in range(step - 1):
     for k in range(6):
         velocity_array[i][k] = (cartesian_sol.q[i + 1][k] - cartesian_sol.q[i][
             k]) / time_point_interval  # вычисление обобщенных скоростей в осях для каждой точки траектории
-# np.set_printoptions(precision=3, linewidth=100, suppress=True)
+# np.set_printoptions(linewidth=100, suppress=True)
 # print(velocity_array)
 
 # for i in cartesian_sol.q: # Отображение позы перебором обобщенных координат
