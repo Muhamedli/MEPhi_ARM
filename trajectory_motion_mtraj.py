@@ -29,8 +29,8 @@ for el in array:
     env.add(goal_ax)
     traj2 = rtb.tools.trajectory.mtraj(rtb.trapezoidal, sol1[0], sol2[0], 25)
     for i in traj2.q:
-        goal_ax = sg.Axes(0.1, pose=robot.fkine(i))
-        env.add(goal_ax)
+        # goal_ax = sg.Axes(0.1, pose=robot.fkine(i))
+        # env.add(goal_ax)
         robot.q = i
         env.step(0.02)
         np.set_printoptions(linewidth=100, suppress=True)
