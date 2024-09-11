@@ -12,7 +12,7 @@ Follow us at [Telegram](https://t.me/engistories) and [VK](https://vk.com/engite
 
 # Software Development Kit
 
-  We use [Robotics Toolbox](https://github.com/petercorke/robotics-toolbox-python) for trajectory computing, [Swift](https://github.com/jhavl/swift) for enviroment simulation, [OpenCV](https://github.com/opencv/opencv) for computer vision
+  We use [Robotics Toolbox](https://github.com/petercorke/robotics-toolbox-python) for trajectory computing, [Swift](https://github.com/jhavl/swift) for enviroment simulation, [OpenCV](https://github.com/opencv/opencv) for computer vision<b />
   We have the intention to integrate [ROS2](https://github.com/ros2) and [Gazebo](https://github.com/gazebosim) into our stack.
 
 <p align="center">
