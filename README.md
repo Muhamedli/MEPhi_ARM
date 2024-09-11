@@ -1,7 +1,5 @@
 # ENGTM.003
 
-[![Powered by the Robotics Toolbox](https://raw.githubusercontent.com/petercorke/robotics-toolbox-python/master/.github/svg/rtb_powered.min.svg)](https://github.com/petercorke/robotics-toolbox-python) 
-
 Follow us at [Telegram](https://t.me/engistories) and [VK](https://vk.com/engiteam.mephi)<br />
 
 <img src="Images/manipulator_mephi.png" alt="drawing" width="1000"/> 
