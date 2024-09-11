@@ -2,15 +2,15 @@
 
 [![Powered by the Robotics Toolbox](https://raw.githubusercontent.com/petercorke/robotics-toolbox-python/master/.github/svg/rtb_powered.min.svg)](https://github.com/petercorke/robotics-toolbox-python) 
 
+Follow us at [Telegram](https://t.me/engistories) and [VK](https://vk.com/engiteam.mephi)<br />
 
-<p float="left">
-  <img src="Images/manipulator_mephi.png" alt="drawing" width="400"/> 
-  <img src="Images/mtraj.gif" width="400"/> 
-</p>
+<img src="Images/manipulator_mephi.png" alt="drawing" width="1000"/> 
 
 ENGTM.003 is a research project that is being created by the student association "Engi Teams", MEPHI university. <br />
 
 Our robot is a 3D-printed desktop robotics arm, powered by stepper motors. When creating the design, aspects such as the cheapness of the design and the prevalence of components were taken into account, which eventually made the whole robot affordable.<br />
+
+<img src="Images/mtraj.gif" width="1000"/> 
 
 # Software Development Kit
 
@@ -25,7 +25,6 @@ Our robot is a 3D-printed desktop robotics arm, powered by stepper motors. When 
 
 
 
-Follow us at [Telegram](https://t.me/engistories) and [VK](https://vk.com/engiteam.mephi)
 
 
 
