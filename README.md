@@ -1,6 +1,8 @@
 # ENGTM.003
 
-<img src="Images/manipulator_mephi.png" alt="drawing" width="700"/> 
+<p align="center">
+  <img src="Images/manipulator_mephi.png" alt="drawing" width="700"/> 
+</p>
 
 ENGTM.003 is a research project that is being created by the student association "Engi Teams", MEPHI university. <br />
 
@@ -13,8 +15,10 @@ Follow us at [Telegram](https://t.me/engistories) and [VK](https://vk.com/engite
   We use [Robotics Toolbox](https://github.com/petercorke/robotics-toolbox-python) for trajectory computing, [Swift](https://github.com/jhavl/swift) for enviroment simulation, [OpenCV](https://github.com/opencv/opencv) for computer vision
   We have the intention to integrate [ROS2](https://github.com/ros2) and [Gazebo](https://github.com/gazebosim) into our stack.
 
+<p align="center">
   <img src="Images/jtraj.gif" alt="drawing" width="700"/>
-  
+</p>
+ 
 # Links
 
   -[Manipulator specifications](https://docs.google.com/spreadsheets/d/1I2XZErj4YQ8Yl8tPQ1UcFLSMpRR4VvGe/edit?gid=242990879#gid=242990879)<br />
