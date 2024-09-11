@@ -5,8 +5,8 @@
 ENGTM.003 is a research project that is being created by the student association "Engi Teams", MEPHI university. <br />
 
 Our robot is a 3D-printed desktop robotics arm, powered by stepper motors. When creating the design, aspects such as the cheapness of the design and the prevalence of components were taken into account, which eventually made the whole robot affordable.<br />
-Follow us at [Telegram](https://t.me/engistories) and [VK](https://vk.com/engiteam.mephi)<br />
 
+Follow us at [Telegram](https://t.me/engistories) and [VK](https://vk.com/engiteam.mephi)<br />
 # Software Development Kit
 
   We use [Robotics Toolbox](https://github.com/petercorke/robotics-toolbox-python) for trajectory computing, [Swift](https://github.com/jhavl/swift) for enviroment simulation, [OpenCV](https://github.com/opencv/opencv) for computer vision
