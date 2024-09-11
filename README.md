@@ -4,8 +4,8 @@
 
 
 <p float="left">
-  <img src="Images/manipulator_mephi.png" alt="drawing" width="300"/> 
-  <img src="Images/mtraj.gif" width="300"/> 
+  <img src="Images/manipulator_mephi.png" alt="drawing" width="400"/> 
+  <img src="Images/mtraj.gif" width="400"/> 
 </p>
 
 ENGTM.003 is a research project that is being created by the student association "Engi Teams", MEPHI university. <br />
