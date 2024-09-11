@@ -8,7 +8,7 @@ ENGTM.003 is a research project that is being created by the student association
 
 Our robot is a 3D-printed desktop robotics arm, powered by stepper motors. When creating the design, aspects such as the cheapness of the design and the prevalence of components were taken into account, which eventually made the whole robot affordable.<br />
 
-Follow us at [Telegram](https://t.me/engistories) and [VK](https://vk.com/engiteam.mephi)<b />
+Follow us on [Telegram](https://t.me/engistories) and [VK](https://vk.com/engiteam.mephi)<b />
 
 # Software Development Kit
 
