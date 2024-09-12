@@ -1,0 +1,4 @@
+для корректнрой работы robotics toolbox и swift мы рекомендуем заменить файлы из оригинальных библиотек, установленных в рабочем python окружении на предложенный
+
+также необходимо установить microsoft build tools (https://visualstudio.microsoft.com/ru/visual-cpp-build-tools/)
+при установке необходимо выбрать desktop development tools
