@@ -1,6 +1,5 @@
 #include <GyverStepper.h>
-#include <Servo.h>
-#include <GParser.h>
+#include <ESP32Servo.h>
 #include <StringUtils.h>
 
 GStepper<STEPPER2WIRE> stepper1(200 * 16 * 11, 18, 5);
@@ -26,9 +25,8 @@ float accel_stepper4 = 15.0;
 float accel_stepper5 = 10.0;
 float accel_stepper6 = 10.0;
 
-float pos[6] = { 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0 };
+float pos[7] = { 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0 };
 float speedMass[6];
-float accelMass[6];
 
 bool isReadyAnnounced = false;
 
@@ -66,27 +64,16 @@ void setup() {
   Serial.begin(115200);
 
   if(!myservo.attached()) {
-    myservo.attach(PIN);  //УКАЗАТЬ ПИН 
+    myservo.attach(13); 
   }
 }
-void set_Speed_Accel(float speedMass[6], float accelMass[6]) {
+void set_Speed(float speedMass[6]) {
   stepper1.setMaxSpeedDeg(speedMass[0]);  // в градусах/сек
-  stepper1.setAccelerationDeg(accelMass[0]);
-
   stepper2.setMaxSpeedDeg(speedMass[1]);  // в градусах/сек
-  stepper2.setAccelerationDeg(accelMass[1]);
-
   stepper3.setMaxSpeedDeg(speedMass[2]);  // в градусах/сек
-  stepper3.setAccelerationDeg(accelMass[2]);
-
   stepper4.setMaxSpeedDeg(speedMass[3]);  // в градусах/сек
-  stepper4.setAccelerationDeg(accelMassх3);
-
   stepper5.setMaxSpeedDeg(speedMass[4]);  // в градусах/сек
-  stepper5.setAccelerationDeg(accelMassх4);
-
   stepper6.setMaxSpeedDeg(speedMass[5]);  // в градусах/сек
-  stepper6.setAccelerationDeg(accelMassх5[5]);
 }
 void Go(){ 
   if (!stepper1.tick()) {
@@ -107,12 +94,12 @@ void Go(){
   if (!stepper6.tick()) {
     stepper6.setTargetDeg(pos[5], ABSOLUTE);
   }
-  myservo.write(pos[6]); // demo
+  myservo.write(pos[6]);
 }
 // строка типа: 10.0/20.0/ ... 15.0/15.0/ ... 10.0/10.0/ ... 10.0
 // сперва 6 углов для шаговиков, потом 6 скоростей для шаговиков, 
 // потом 6 ускорений для шаговиков, последним указывается угол для серво
-void Read(const Text& COM_port, float pos[], float speed[], float accel[], bool withServo) {
+void Read(const Text& COM_port, float pos[], float speed[], bool withServo) {
   int i = 0;
   for(i; i < 6; i++) {
     pos[i] = COM_port.getSub(i, '/').toFloat();
@@ -122,6 +109,18 @@ void Read(const Text& COM_port, float pos[], float speed[], float accel[], bool 
   if(withServo) {
     pos[6] = COM_port.getSub(18, '/').toFloat();
   }
+}
+
+void Split(String data, float mass[]){
+  int i, j = 0, t = 0;
+  for(i = 0; i < data.length(); i++){
+    if(data[i] == ' '){
+      mass[t] = data.substring(j, i).toFloat();
+      j = i + 1;
+      t++;
+    }
+  }
+  mass[t] = data.substring(j).toFloat();
 }
 
 void InputData() {
@@ -137,7 +136,8 @@ void InputData() {
       stepper6.brake();
     }
     else {
-      Read(COM_port, pos, speedMass, accelMass, true);
+      //Read(COM_port, pos, speedMass, true);
+      Split(COM_port, pos);
       }
     }
   }
