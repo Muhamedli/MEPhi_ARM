@@ -2,3 +2,15 @@
 
 также необходимо установить microsoft build tools (https://visualstudio.microsoft.com/ru/visual-cpp-build-tools/)
 при установке необходимо выбрать desktop development tools
+
+перед установкой пакета проверьте наличие numpy 
+
+python -c "import numpy; print(numpy.version.version)
+
+если он есть, то нужно сначала его удалить с помощью команды 
+
+pip uninstall numpy
+
+затем установить нужную его версию с помощью команды 
+
+pip install numpy==1.26.4
