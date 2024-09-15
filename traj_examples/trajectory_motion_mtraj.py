@@ -11,7 +11,7 @@ robot = rtb.models.Puma560()
 robot.q = robot.qz
 env.add(robot)
 
-Tep1 = robot.fkine(robot.q) * sm.SE3.Trans(0, -0.2, -0.3) * sm.SE3.OA([0, 0, -1], [0, 1, 0])
+Tep1 = robot.fkine(robot.q) * sm.SE3.Trans(-0.1, -0.2, -0.3) * sm.SE3.OA([0, 0, -1], [0, 1, 0])
 sol1 = robot.ik_LM(Tep1)
 goal_ax = sg.Axes(0.1, pose=Tep1)
 env.add(goal_ax)
