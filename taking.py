@@ -13,7 +13,7 @@ def TrajToSurf(x, y):
     traj = rtb.tools.trajectory.jtraj(robot.qz, sol[0], 100)
     return traj, Tep
 
-
-x, y = 0.1, 0.1 
-traj1, Tep1 = TrajToSurf(x,y)
-print(*list(map(lambda x: round(x, ndigits=3),traj1.q[-1])), sep=" ", )
+def AnglePrint(x, y):
+    x, y = 0.1, 0.1 
+    traj1, Tep1 = TrajToSurf(x,y)
+    print(*list(map(lambda x: round(x, ndigits=3),traj1.q[-1])), sep=" ")
