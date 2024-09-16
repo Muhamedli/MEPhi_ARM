@@ -9,7 +9,7 @@ env = Swift()
 env.launch(realtime=True)
 
 # Make a panda model and set its joint angles to the ready joint configuration
-panda = rtb.models.Puma560()
+panda = rtb.models.MEPhI_ARM()
 panda.q = panda.qz
 
 # Set a desired and effector pose an an offset from the current end-effector pose

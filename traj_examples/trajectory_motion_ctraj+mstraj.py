@@ -6,7 +6,7 @@ import swift
 env = swift.Swift()
 env.launch(realtime=True)
 
-robot = rtb.models.Puma560()
+robot = rtb.models.MEPhI_ARM()
 robot.q = robot.qz
 env.add(robot)
 
