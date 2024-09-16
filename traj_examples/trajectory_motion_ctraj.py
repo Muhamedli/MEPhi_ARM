@@ -56,5 +56,4 @@ for z in range(step - 1):  # Отображение позы заданием с
     robot.qd = velocity_array[z]
     # link_ax = sg.Axes(0.1, pose=robot.fkine(robot.q))  # Построение траектории
     # env.add(link_ax)
-    z += 1
     env.step(time_point_interval)
