@@ -5,8 +5,8 @@
 GStepper<STEPPER2WIRE> stepper1(200 * 16 * 11, 18, 5);
 GStepper<STEPPER2WIRE> stepper2(200 * 16 * 12, 17, 16);
 GStepper<STEPPER2WIRE> stepper3(200 * 16 * 15, 27, 14);
-GStepper<STEPPER2WIRE> stepper4(200 * 16 * 9, 2, 15);
-GStepper<STEPPER2WIRE> stepper5(200 * 16 * 6, 26, 25);
+GStepper<STEPPER2WIRE> stepper4(200 * 16 * 9,   2, 15);
+GStepper<STEPPER2WIRE> stepper5(200 * 16 * 6,  26, 25);
 GStepper<STEPPER2WIRE> stepper6(200 * 16 * 50, 33, 32);
 
 Servo myservo;
@@ -104,7 +104,7 @@ void Read(const Text& COM_port, float pos[], float speed[], bool withServo) {
   for(i; i < 6; i++) {
     pos[i] = COM_port.getSub(i, '/').toFloat();
     speed[i] = COM_port.getSub(i + 6, '/').toFloat();
-    accel[i] = COM_port.getSub(i + 12, '/').toFloat();
+    //  accel[i] = COM_port.getSub(i + 12, '/').toFloat();
   }
   if(withServo) {
     pos[6] = COM_port.getSub(18, '/').toFloat();
@@ -138,7 +138,6 @@ void InputData() {
     else {
       //Read(COM_port, pos, speedMass, true);
       Split(COM_port, pos);
-      }
     }
   }
 }
