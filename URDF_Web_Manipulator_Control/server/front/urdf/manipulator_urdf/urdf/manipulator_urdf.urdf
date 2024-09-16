@@ -1,0 +1,506 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- This URDF was automatically created by SolidWorks to URDF Exporter! Originally created by Stephen Brawner (brawner@gmail.com) 
+     Commit Version: 1.6.0-4-g7f85cfe  Build Version: 1.6.7995.38578
+     For more information, please see http://wiki.ros.org/sw_urdf_exporter -->
+<robot
+  name="manipulator_urdf">
+  <link
+    name="base_link">
+    <inertial>
+      <origin
+        xyz="1.8248E-09 -0.045632 0.027978"
+        rpy="0 0 0" />
+      <mass
+        value="1.9374" />
+      <inertia
+        ixx="0.013429"
+        ixy="-1.0606E-10"
+        ixz="1.0271E-10"
+        iyy="0.0037342"
+        iyz="-0.00072089"
+        izz="0.015485" />
+    </inertial>
+    <visual>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://manipulator_urdf/meshes/base_link.STL" />
+      </geometry>
+      <material
+        name="">
+        <color
+          rgba="0.34, 0.16, 0.52, 1" />
+      </material>
+    </visual>
+    <collision>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://manipulator_urdf/meshes/base_link.STL" />
+      </geometry>
+    </collision>
+  </link>
+  <link
+    name="link1">
+    <inertial>
+      <origin
+        xyz="4.1633E-17 2.7756E-17 0.06944"
+        rpy="0 0 0" />
+      <mass
+        value="1.7255" />
+      <inertia
+        ixx="0.0097031"
+        ixy="1.2865E-18"
+        ixz="-7.7501E-18"
+        iyy="0.0169"
+        iyz="9.5678E-20"
+        izz="0.013798" />
+    </inertial>
+    <visual>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://manipulator_urdf/meshes/link1.STL" />
+      </geometry>
+      <material
+        name="">
+        <color
+          rgba="0.34, 0.16, 0.52, 1" />
+      </material>
+    </visual>
+    <collision>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://manipulator_urdf/meshes/link1.STL" />
+      </geometry>
+    </collision>
+  </link>
+  <joint
+    name="joint1"
+    type="revolute">
+    <origin
+      xyz="0 0 0.073"
+      rpy="0 0 0" />
+    <parent
+      link="base_link" />
+    <child
+      link="link1" />
+    <axis
+      xyz="0 0 -1" />
+    <limit
+      lower="-1.5708"
+      upper="1.5708"
+      effort="100"
+      velocity="100" />
+  </joint>
+  <link
+    name="link2">
+    <inertial>
+      <origin
+        xyz="-0.089403 5.5511E-17 0.03982"
+        rpy="0 0 0" />
+      <mass
+        value="1.8234" />
+      <inertia
+        ixx="0.016113"
+        ixy="1.1297E-18"
+        ixz="-0.00018171"
+        iyy="0.019305"
+        iyz="1.0759E-19"
+        izz="0.0054388" />
+    </inertial>
+    <visual>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://manipulator_urdf/meshes/link2.STL" />
+      </geometry>
+      <material
+        name="">
+        <color
+          rgba="1, 0.75, 0, 1" />
+      </material>
+    </visual>
+    <collision>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://manipulator_urdf/meshes/link2.STL" />
+      </geometry>
+    </collision>
+  </link>
+  <joint
+    name="joint2"
+    type="revolute">
+    <origin
+      xyz="0.09 0 0.1335"
+      rpy="0 0 0" />
+    <parent
+      link="link1" />
+    <child
+      link="link2" />
+    <axis
+      xyz="-1 0 0" />
+    <limit
+      lower="-1.0472"
+      upper="1.0472"
+      effort="100"
+      velocity="100" />
+  </joint>
+  <link
+    name="link3">
+    <inertial>
+      <origin
+        xyz="-0.052278 -0.0011719 0.016058"
+        rpy="0 0 0" />
+      <mass
+        value="1.2124" />
+      <inertia
+        ixx="0.0029349"
+        ixy="-1.8848E-05"
+        ixz="0.00013574"
+        iyy="0.0023287"
+        iyz="0.00032218"
+        izz="0.0020937" />
+    </inertial>
+    <visual>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://manipulator_urdf/meshes/link3.STL" />
+      </geometry>
+      <material
+        name="">
+        <color
+          rgba="0.34, 0.16, 0.52, 1" />
+      </material>
+    </visual>
+    <collision>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://manipulator_urdf/meshes/link3.STL" />
+      </geometry>
+    </collision>
+  </link>
+  <joint
+    name="joint3"
+    type="revolute">
+    <origin
+      xyz="-0.0344 0 0.26"
+      rpy="0 0 0" />
+    <parent
+      link="link2" />
+    <child
+      link="link3" />
+    <axis
+      xyz="-1 0 0" />
+    <limit
+      lower="-0.7854"
+      upper="0.7854"
+      effort="100"
+      velocity="100" />
+  </joint>
+  <link
+    name="link4">
+    <inertial>
+      <origin
+        xyz="1.5713E-08 0.079616 -2.0778E-08"
+        rpy="0 0 0" />
+      <mass
+        value="0.53923" />
+      <inertia
+        ixx="0.0013365"
+        ixy="1.9989E-10"
+        ixz="-9.175E-11"
+        iyy="0.00085545"
+        iyz="-3.3473E-10"
+        izz="0.0018778" />
+    </inertial>
+    <visual>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://manipulator_urdf/meshes/link4.STL" />
+      </geometry>
+      <material
+        name="">
+        <color
+          rgba="1, 0.75, 0, 1" />
+      </material>
+    </visual>
+    <collision>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://manipulator_urdf/meshes/link4.STL" />
+      </geometry>
+    </collision>
+  </link>
+  <joint
+    name="joint4"
+    type="revolute">
+    <origin
+      xyz="-0.0556 0.068 0"
+      rpy="0 0 0" />
+    <parent
+      link="link3" />
+    <child
+      link="link4" />
+    <axis
+      xyz="0 1 0" />
+    <limit
+      lower="-2.3562"
+      upper="2.3562"
+      effort="100"
+      velocity="100" />
+  </joint>
+  <link
+    name="link5">
+    <inertial>
+      <origin
+        xyz="-0.046 0.021634 5.3757E-08"
+        rpy="0 0 0" />
+      <mass
+        value="0.29377" />
+      <inertia
+        ixx="0.00022071"
+        ixy="2.9134E-10"
+        ixz="-5.6267E-10"
+        iyy="0.00019733"
+        iyz="2.3563E-10"
+        izz="0.00023915" />
+    </inertial>
+    <visual>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://manipulator_urdf/meshes/link5.STL" />
+      </geometry>
+      <material
+        name="">
+        <color
+          rgba="0.34, 0.16, 0.52, 1" />
+      </material>
+    </visual>
+    <collision>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://manipulator_urdf/meshes/link5.STL" />
+      </geometry>
+    </collision>
+  </link>
+  <joint
+    name="joint5"
+    type="revolute">
+    <origin
+      xyz="0.046 0.15 0"
+      rpy="0 0 0" />
+    <parent
+      link="link4" />
+    <child
+      link="link5" />
+    <axis
+      xyz="-1 0 0" />
+    <limit
+      lower="-1.5708"
+      upper="1.5708"
+      effort="100"
+      velocity="100" />
+  </joint>
+  <link
+    name="link6">
+    <inertial>
+      <origin
+        xyz="0 0.010463 -2.7463E-06"
+        rpy="0 0 0" />
+      <mass
+        value="0.051193" />
+      <inertia
+        ixx="1.4027E-05"
+        ixy="9.6299E-23"
+        ixz="9.6313E-23"
+        iyy="2.5458E-05"
+        iyz="9.8939E-10"
+        izz="1.4057E-05" />
+    </inertial>
+    <visual>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://manipulator_urdf/meshes/link6.STL" />
+      </geometry>
+      <material
+        name="">
+        <color
+          rgba="1, 0.75, 0, 1" />
+      </material>
+    </visual>
+    <collision>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://manipulator_urdf/meshes/link6.STL" />
+      </geometry>
+    </collision>
+  </link>
+  <joint
+    name="joint6"
+    type="revolute">
+    <origin
+      xyz="-0.046 0.0534 0"
+      rpy="0 0 0" />
+    <parent
+      link="link5" />
+    <child
+      link="link6" />
+    <axis
+      xyz="0 1 0" />
+    <limit
+      lower="-3.1415"
+      upper="3.1415"
+      effort="100"
+      velocity="100" />
+  </joint>
+  <link
+    name="gripper_base">
+    <inertial>
+      <origin
+        xyz="0.01099 -0.057049 -0.0063013"
+        rpy="0 0 0" />
+      <mass
+        value="0.20313" />
+      <inertia
+        ixx="7.6508E-05"
+        ixy="8.2818E-06"
+        ixz="-1.2029E-07"
+        iyy="0.00011222"
+        iyz="-3.7369E-06"
+        izz="0.00010143" />
+    </inertial>
+    <visual>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://manipulator_urdf/meshes/gripper_base.STL" />
+      </geometry>
+      <material
+        name="">
+        <color
+          rgba="1, 0.75, 0, 1" />
+      </material>
+    </visual>
+    <collision>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://manipulator_urdf/meshes/gripper_base.STL" />
+      </geometry>
+    </collision>
+  </link>
+  <joint
+    name="joint_gripper_base"
+    type="fixed">
+    <origin
+      xyz="-0.01 0.1085 0"
+      rpy="0 0 0" />
+    <parent
+      link="link6" />
+    <child
+      link="gripper_base" />
+    <axis
+      xyz="0 0 0" />
+  </joint>
+  <link
+    name="finger">
+    <inertial>
+      <origin
+        xyz="0.0086661 -0.026558 -1.2302E-08"
+        rpy="0 0 0" />
+      <mass
+        value="0.02578" />
+      <inertia
+        ixx="1.8442E-05"
+        ixy="5.3886E-07"
+        ixz="3.7434E-12"
+        iyy="1.1248E-05"
+        iyz="-5.5838E-12"
+        izz="2.3903E-05" />
+    </inertial>
+    <visual>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://manipulator_urdf/meshes/finger.STL" />
+      </geometry>
+      <material
+        name="">
+        <color
+          rgba="0.34, 0.16, 0.52, 1" />
+      </material>
+    </visual>
+    <collision>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://manipulator_urdf/meshes/finger.STL" />
+      </geometry>
+    </collision>
+  </link>
+  <joint
+    name="joint_finger"
+    type="prismatic">
+    <origin
+      xyz="-0.01 0.1085 0"
+      rpy="0 0 0" />
+    <parent
+      link="link6" />
+    <child
+      link="finger" />
+    <axis
+      xyz="1 0 0" />
+    <limit
+      lower="0"
+      upper="0.037"
+      effort="100"
+      velocity="100" />
+  </joint>
+</robot>
