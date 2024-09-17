@@ -1,16 +1,26 @@
 import cv2
+from taking import *
 
-from hostcode.taking import *
-
-imageHight = 720
-imageWidth = 1280
+imageHight = 540
+imageWidth = 960
 
 frameWidth = 0.50
 frameHight = 0.255
 
+flag = 1
+fPressed = 0
+text = ""
+y0, dy = 50, 50
+
+font = cv2.FONT_HERSHEY_COMPLEX
+fontScale = 1
+fontColor = (147, 20, 255)
+thickness = 2
+lineType = 1
+
 # Define camera
 camera = cv2.VideoCapture(0)
-# camera.set(cv2.CAP_PROP_EXPOSURE, 40)
+# camera.set(cv2.CAP_PROP_EXPOSURE, 20)
 camera.set(cv2.CAP_PROP_FRAME_WIDTH, imageWidth)
 camera.set(cv2.CAP_PROP_FRAME_HEIGHT, imageHight)
 
@@ -47,10 +57,10 @@ while True:
         x_centerPixel_END_CS = 1 * (x_centerPixel - imageWidth / 2)
         y_centerPixel_END_CS = -1 * (y_centerPixel - imageHight / 2)
 
-        x_centerMeter_END_CS = x_centerPixel_END_CS * frameWidth / imageWidth
+        x_centerMeter_END_CS = x_centerPixel_END_CS * frameWidth / imageWidth + 0.01
         y_centerMeter_END_CS = y_centerPixel_END_CS * frameHight / imageHight
 
-        print("x: ", round(x_centerMeter_END_CS, ndigits=3), "y: ", round(y_centerMeter_END_CS, ndigits=3))
+        # print("x: ", round(x_centerMeter_END_CS, ndigits= 3), "y: ", round(y_centerMeter_END_CS, ndigits=3) )
 
         # Display size of the image
         # print("width: ", img.shape[1], "height: ", img.shape[0])
@@ -64,25 +74,31 @@ while True:
         thickness = 2
         lineType = 1
 
-        angle_joint = angleArray(x_centerMeter_END_CS, y_centerMeter_END_CS)
+        if (flag):
+            angle_joint = angleArray(x_centerMeter_END_CS, y_centerMeter_END_CS)
 
         text = ""
         for i in range(len(angle_joint)):
             text += f"angle joint {i + 1}: {angle_joint[i]}\n"
 
-        y0, dy = 50, 50
-        for i, line in enumerate(text.split('\n')):
-            y = y0 + i * dy
-            cv2.putText(img, line, (50, y),
-                        font,
-                        fontScale,
-                        fontColor,
-                        thickness,
-                        lineType)
     # Display image
+    for i, line in enumerate(text.split('\n')):
+        y = y0 + i * dy
+        cv2.putText(img, line, (50, y),
+                    font,
+                    fontScale,
+                    fontColor,
+                    thickness,
+                    lineType)
     cv2.namedWindow("Object_detection", cv2.WINDOW_NORMAL)
     cv2.resizeWindow("Object_detection", width=imageWidth, height=imageHight)
     cv2.imshow("Object_detection", img)
     # Wait for the key press
     if cv2.waitKey(1) == ord('q'):
         break
+    if cv2.waitKey(1) == ord('f'):
+        if fPressed == 0:
+            flag = (flag + 1) % 2
+            fPressed = 1
+    elif fPressed == 1:
+        fPressed = 0

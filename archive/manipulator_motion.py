@@ -10,10 +10,10 @@ env.launch(realtime=True)
 
 # Make a panda model and set its joint angles to the ready joint configuration
 panda = rtb.models.MEPhI_ARM()
-panda.q = panda.qz
+panda.q = panda.qr
 
 # Set a desired and effector pose an an offset from the current end-effector pose
-Tep = panda.fkine(panda.q) * sm.SE3.Trans(0.2, -0.2, -0.3) * sm.SE3.OA([0, 0, -1], [1, 1, 0])
+Tep = panda.fkine(panda.q) * sm.SE3.Trans(0, 0.28, 0) * sm.SE3.OA([0, 1, 0], [0, 0, 1])
 goal_ax = sg.Axes(0.1, pose=Tep)
 
 # Add the robot to the simulator
