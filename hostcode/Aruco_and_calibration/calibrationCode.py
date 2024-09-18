@@ -1,130 +1,86 @@
-import cv2  # Import the OpenCV library to enable computer vision
-import numpy as np  # Import the NumPy scientific computing library
-import glob  # Used to get retrieve files that have a specified pattern
+# Import required modules 
+import cv2
+import numpy as np
+import os
+import glob
+import json
+import yaml
 
-# Path to the image that you want to undistort
-distorted_img_filename = 'samples/WIN_20240917_14_59_56_Pro.jpg'
+# Define the dimensions of checkerboard 
+CHECKERBOARD = (6, 9)
 
-# Chessboard dimensions
-number_of_squares_X = 10  # Number of chessboard squares along the x-axis
-number_of_squares_Y = 7  # Number of chessboard squares along the y-axis
-nX = number_of_squares_X - 1  # Number of interior corners along x-axis
-nY = number_of_squares_Y - 1  # Number of interior corners along y-axis
-square_size = 0.023  # Length of the side of a square in meters
+# stop the iteration when specified 
+# accuracy, epsilon, is reached or 
+# specified number of iterations are completed. 
+criteria = (cv2.TERM_CRITERIA_EPS +
+            cv2.TERM_CRITERIA_MAX_ITER, 30, 0.001)
 
-# Store vectors of 3D points for all chessboard images (world coordinate frame)
-object_points = []
+# Vector for 3D points 
+threedpoints = []
 
-# Store vectors of 2D points for all chessboard images (camera coordinate frame)
-image_points = []
+# Vector for 2D points 
+twodpoints = []
 
-# Set termination criteria. We stop either when an accuracy is reached or when
-# we have finished a certain number of iterations.
-criteria = (cv2.TERM_CRITERIA_EPS + cv2.TERM_CRITERIA_MAX_ITER, 30, 0.001)
+# 3D points real world coordinates 
+objectp3d = np.zeros((1, CHECKERBOARD[0]
+                      * CHECKERBOARD[1],
+                      3), np.float32)
+objectp3d[0, :, :2] = np.mgrid[0:CHECKERBOARD[0],
+                      0:CHECKERBOARD[1]].T.reshape(-1, 2)
+prev_img_shape = None
 
-# Define real world coordinates for points in the 3D coordinate frame
-# Object points are (0,0,0), (1,0,0), (2,0,0) ...., (5,8,0)
-object_points_3D = np.zeros((nX * nY, 3), np.float32)
+images = glob.glob('samples/*.jpg')
 
-# These are the x and y coordinates
-object_points_3D[:, :2] = np.mgrid[0:nY, 0:nX].T.reshape(-1, 2)
+for filename in images:
+    image = cv2.imread(filename)
+    grayColor = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
 
-object_points_3D = object_points_3D * square_size
+    # Find the chess board corners
+    # If desired number of corners are
+    # found in the image then ret = true
+    ret, corners = cv2.findChessboardCorners(
+        grayColor, CHECKERBOARD,
+        cv2.CALIB_CB_ADAPTIVE_THRESH
+        + cv2.CALIB_CB_FAST_CHECK +
+        cv2.CALIB_CB_NORMALIZE_IMAGE)
 
+    if ret == True:
+        threedpoints.append(objectp3d)
 
-def main():
-    # Get the file path for images in the current directory
-    images = glob.glob('samples/*.jpg')
+        # Refining pixel coordinates
+        # for given 2d points.
+        corners2 = cv2.cornerSubPix(
+            grayColor, corners, (11, 11), (-1, -1), criteria)
 
-    # Go through each chessboard image, one by one
-    for image_file in images:
+        twodpoints.append(corners2)
 
-        # Load the image
-        image = cv2.imread(image_file)
+        # Draw and display the corners
+        image = cv2.drawChessboardCorners(image,
+                                          CHECKERBOARD,
+                                          corners2, ret)
 
-        # Convert the image to grayscale
-        gray = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
+cv2.destroyAllWindows()
+h, w = image.shape[:2]
 
-        # Find the corners on the chessboard
-        success, corners = cv2.findChessboardCorners(gray, (nY, nX), None)
+ret, matrix, distortion, r_vecs, t_vecs = cv2.calibrateCamera(
+    threedpoints, twodpoints, grayColor.shape[::-1], None, None)
 
-        # If the corners are found by the algorithm, draw them
-        if success == True:
-            # Append object points
-            object_points.append(object_points_3D)
+# Displaying required output
+print(" Camera matrix:")
+print(matrix)
 
-            # Find more exact corner pixels
-            corners_2 = cv2.cornerSubPix(gray, corners, (11, 11), (-1, -1), criteria)
+print("\n Distortion coefficient:")
+print(distortion)
 
-            # Append image points
-            image_points.append(corners_2)
+print("\n Rotation Vectors:")
+print(r_vecs)
 
-            # Draw the corners
-            cv2.drawChessboardCorners(image, (nY, nX), corners_2, success)
+print("\n Translation Vectors:")
+print(t_vecs)
 
-            # Display the image. Used for testing.
-            # cv2.imshow("Image", image)
+data = {"camera_matrix": matrix.tolist(), "dist_coeff": distortion.tolist()}
+fname = "data.json"
+import json
 
-            # Display the window for a short period. Used for testing.
-            # cv2.waitKey(200)
-
-    # Now take a distorted image and undistort it
-    distorted_image = cv2.imread(distorted_img_filename)
-
-    # Perform camera calibration to return the camera matrix, distortion coefficients, rotation and translation vectors etc
-    ret, mtx, dist, rvecs, tvecs = cv2.calibrateCamera(object_points,
-                                                       image_points,
-                                                       gray.shape[::-1],
-                                                       None,
-                                                       None)
-
-    # Get the dimensions of the image
-    height, width = distorted_image.shape[:2]
-
-    # Refine camera matrix
-    # Returns optimal camera matrix and a rectangular region of interest
-    optimal_camera_matrix, roi = cv2.getOptimalNewCameraMatrix(mtx, dist,
-                                                               (width, height),
-                                                               1,
-                                                               (width, height))
-
-
-
-    # Undistort the image
-    undistorted_image = cv2.undistort(distorted_image, mtx, dist, None,
-                                      optimal_camera_matrix)
-
-    # Crop the image. Uncomment these two lines to remove black lines
-    # on the edge of the undistorted image.
-    # x, y, w, h = roi
-    # undistorted_image = undistorted_image[y:y+h, x:x+w]
-
-    # Display key parameter outputs of the camera calibration process
-    print("Optimal Camera matrix:")
-    print(optimal_camera_matrix)
-
-    print("\n Distortion coefficient:")
-    print(dist)
-
-    print("\n Rotation Vectors:")
-    print(rvecs)
-
-    print("\n Translation Vectors:")
-    print(tvecs)
-
-    # Create the output file name by removing the '.jpg' part
-    size = len(distorted_img_filename)
-    new_filename = distorted_img_filename[:size - 4]
-    new_filename = new_filename + '_undistorted.jpg'
-
-    # Save the undistorted image
-    cv2.imwrite(new_filename, undistorted_image)
-
-    # Close all windows
-    cv2.destroyAllWindows()
-
-    dist_params = np.array([mtx, dist], dtype="object")
-    np.save("distortion_param", dist_params)
-
-
-main()
+with open(fname, "w") as f:
+    json.dump(data, f)
