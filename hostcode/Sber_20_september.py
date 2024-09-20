@@ -12,15 +12,11 @@ camera_matrix = np.array(data["camera_matrix"])
 dist_coefs = np.array(data["dist_coeff"])
 newcameramtx, roi = cv2.getOptimalNewCameraMatrix(camera_matrix, dist_coefs, (imageWidth, imageHight), 1,
                                                   (imageWidth, imageHight))
-
-frameWidth = 0.51 * 283 / 308
-frameHight = 0.255
-
 flag = 1
 fPressed = 0
+
 text = ""
 y0, dy = 50, 50
-
 font = cv2.FONT_HERSHEY_COMPLEX
 fontScale = 1
 fontColor = (147, 20, 255)
@@ -30,8 +26,6 @@ lineType = 1
 camera = cv2.VideoCapture(0)
 camera.set(cv2.CAP_PROP_FRAME_WIDTH, imageWidth)
 camera.set(cv2.CAP_PROP_FRAME_HEIGHT, imageHight)
-# camera.set(cv2.CAP_PROP_AUTO_EXPOSURE, 1000)
-
 
 while True:
     good, img = camera.read()
@@ -44,11 +38,11 @@ while True:
     arucoDict = cv2.aruco.getPredefinedDictionary(cv2.aruco.DICT_4X4_250)
     detector = cv2.aruco.ArucoDetector(arucoDict, arucoParams)
     (corners, ids, rejected) = detector.detectMarkers(imgToProduse)
-    # print(corners)
+
     if len(corners) != 0:
         try:
             rvec, tvec, _objPoints = cv2.aruco.estimatePoseSingleMarkers(corners, 0.025, camera_matrix, dist_coefs)
-            cv2.drawFrameAxes(img, camera_matrix, dist_coefs, rvec, tvec, length=0.025)
+            cv2.drawFrameAxes(img, camera_matrix, dist_coefs, rvec, tvec, length=0.02)
         except:
             print("trouble")
         cv2.aruco.drawDetectedMarkers(img, corners)
@@ -57,17 +51,17 @@ while True:
 
         tvec[0][0][2] -= 0.085  # 0.308
         # tvec[0][0][2] = 0.308
-        tvec[0][0][1] = (tvec[0][0][1] - 0.0325) * -1
+        tvec[0][0][1] = (tvec[0][0][1] - 0.0325)
         tvec[0][0][0] -= 0.01
 
-        print(tvec[0][0])
+        # print(tvec[0][0])
 
         if (flag):
             angle_joint = SolDimArray(tvec[0][0])
+            text = ""
+            for i in range(len(angle_joint)):
+                text += f"angle joint {i + 1}: {angle_joint[i]}\n"
 
-        text = ""
-        for i in range(len(angle_joint)):
-            text += f"angle joint {i + 1}: {angle_joint[i]}\n"
 
     # Display image
     for i, line in enumerate(text.split('\n')):
@@ -84,11 +78,11 @@ while True:
     cv2.imshow("Object_detection", img)
 
     # Wait for the key press
-    if cv2.waitKey(1) == ord('q'):
-        break
     if cv2.waitKey(1) == ord('f'):
         if fPressed == 0:
             flag = (flag + 1) % 2
             fPressed = 1
     elif fPressed == 1:
         fPressed = 0
+    if cv2.waitKey(1) == ord('q'):
+        break

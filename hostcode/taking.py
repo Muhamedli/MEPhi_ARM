@@ -22,7 +22,7 @@ def TrajToSurf(x, y):
 
 
 def SolDim(tvec):
-    Tep = robot.fkine(robot.qr) * sm.SE3.Trans(tvec[0], tvec[2], tvec[1])
+    Tep = robot.fkine(robot.qr) * sm.SE3.Trans(tvec[0], tvec[1], tvec[2])
     sol = robot.ik_LM(Tep)
     return sol[0]
 
