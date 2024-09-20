@@ -2,7 +2,6 @@ import cv2
 from taking import *
 import json
 
-
 f = open("C:/coding/git/Robot-manipulator/hostcode/Aruco_and_calibration/data.json")
 data = json.load(f)
 
@@ -13,9 +12,6 @@ camera_matrix = np.array(data["camera_matrix"])
 dist_coefs = np.array(data["dist_coeff"])
 newcameramtx, roi = cv2.getOptimalNewCameraMatrix(camera_matrix, dist_coefs, (imageWidth, imageHight), 1,
                                                   (imageWidth, imageHight))
-
-frameWidth = 0.51 * 283 / 308
-frameHight = 0.255
 
 flag = 1
 fPressed = 0
@@ -33,16 +29,18 @@ camera.set(cv2.CAP_PROP_FRAME_WIDTH, imageWidth)
 camera.set(cv2.CAP_PROP_FRAME_HEIGHT, imageHight)
 
 tvecArray = []
-filVal = [0,0,0]
+filVal = [0, 0, 0]
+
 
 def RunningAverageAdaptive(newVal, filVal):
-    if(abs(newVal- filVal) > 1.5): 
+    if (abs(newVal - filVal) > 1.5):
         k = 1.5
-    else: 
+    else:
         k = 0.5
 
     filVal += (newVal - filVal) * k
     return filVal
+
 
 while True:
     good, img = camera.read()
@@ -66,10 +64,8 @@ while True:
             print("trouble")
         cv2.aruco.drawDetectedMarkers(img, corners)
 
-
         # print(list(map(lambda x: round(x/np.pi * 180), rvec[0][0])))
 
-        
         tvec[0][0][2] -= 0.085  # 0.308
 
         ''''
@@ -77,8 +73,7 @@ while True:
         tvec[0][0][1] = tvec[0][0][1] - 0.0325
         tvec[0][0][0] -= 0.01
         '''
-        
-       
+
         if (flag):
             angle_joint = SolDimArray(tvec[0][0])
 
@@ -95,14 +90,13 @@ while True:
                     fontColor,
                     thickness,
                     lineType)
-        
 
     cv2.namedWindow("Object_detection", cv2.WINDOW_NORMAL)
     cv2.resizeWindow("Object_detection", width=imageWidth, height=imageHight)
     cv2.imshow("Object_detection", img)
 
     # Wait for the key press
-    
+
     if cv2.waitKey(1) == ord('f'):
         if fPressed == 0:
             flag = (flag + 1) % 2
@@ -111,6 +105,4 @@ while True:
         fPressed = 0
 
     if cv2.waitKey(1) == ord('q'):
-            break
-    
-    
+        break

@@ -50,10 +50,10 @@ def get_calibration_parameters(img_dir):
     return mtx, dist
 
 
-OUTPUT_JSON = 'Charuco_board_calibration.json'
+OUTPUT_JSON = 'charuco_board_calibration.json'
 
 mtx, dist = get_calibration_parameters(img_dir='samples_charuco')
-data = {"mtx": mtx.tolist(), "dist": dist.tolist()}
+data = {"camera_matrix": mtx.tolist(), "dist_coeff": dist.tolist()}
 
 with open(OUTPUT_JSON, 'w') as json_file:
     json.dump(data, json_file, indent=4)
