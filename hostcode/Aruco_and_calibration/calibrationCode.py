@@ -83,4 +83,4 @@ data = {"camera_matrix": matrix.tolist(), "dist_coeff": distortion.tolist()}
 fname = "data.json"
 
 with open(fname, "w") as f:
-    json.dump(data, f)
+    json.dump(data, f, indent=4)
