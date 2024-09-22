@@ -62,29 +62,23 @@ while True:
             for i in range(len(tvec[0][0])):
                 filVal[i] = RunningAverageAdaptive(tvec[0][0][i], filVal[i])
                 tvec[0][0][i] = filVal[i]
+
+            tvec[0][0][2] -= 0.085  # 0.308
+
+            #print(list(map(lambda x: round(x/np.pi * 180), rvec[0][0])))
+            trans_matrix = cv2.Rodrigues(rvec)
+
+            if (flag):
+                angle_joint = SolDimArray(tvec[0][0], trans_matrix)
+
+            text = ""
+            for i in range(len(angle_joint)):
+                text += f"angle joint {i + 1}: {angle_joint[i]}\n"
+
         except:
             print("trouble")
+
         cv2.aruco.drawDetectedMarkers(img, corners)
-
-
-        # print(list(map(lambda x: round(x/np.pi * 180), rvec[0][0])))
-
-        
-        tvec[0][0][2] -= 0.085  # 0.308
-
-        ''''
-        # tvec[0][0][2] = 0.308
-        tvec[0][0][1] = tvec[0][0][1] - 0.0325
-        tvec[0][0][0] -= 0.01
-        '''
-        
-       
-        if (flag):
-            angle_joint = SolDimArray(tvec[0][0])
-
-        text = ""
-        for i in range(len(angle_joint)):
-            text += f"angle joint {i + 1}: {angle_joint[i]}\n"
 
     # Display image
     for i, line in enumerate(text.split('\n')):
