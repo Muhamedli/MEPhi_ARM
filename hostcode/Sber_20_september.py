@@ -32,6 +32,9 @@ camera.set(cv2.CAP_PROP_FRAME_HEIGHT, imageHight)
 tvecArray = []
 filVal = [0, 0, 0]
 
+cv2.namedWindow("Object_detection", cv2.WINDOW_NORMAL)
+cv2.resizeWindow("Object_detection", width=imageWidth, height=imageHight)
+
 
 def RunningAverageAdaptive(newVal, filVal):
     if (abs(newVal - filVal) > 1.5):
@@ -54,7 +57,8 @@ while True:
     arucoDict = cv2.aruco.getPredefinedDictionary(cv2.aruco.DICT_4X4_250)
     detector = cv2.aruco.ArucoDetector(arucoDict, arucoParams)
     (corners, ids, rejected) = detector.detectMarkers(imgToProduse)
-    if len(corners) != 0:
+
+    if ids is not None:
         try:
             rvec, tvec, _objPoints = cv2.aruco.estimatePoseSingleMarkers(corners, 0.025, camera_matrix, dist_coefs)
             cv2.drawFrameAxes(img, camera_matrix, dist_coefs, rvec, tvec, length=0.025)
@@ -89,10 +93,8 @@ while True:
                     thickness,
                     lineType)
 
-    cv2.namedWindow("Object_detection", cv2.WINDOW_NORMAL)
-    cv2.resizeWindow("Object_detection", width=imageWidth, height=imageHight)
-    cv2.imshow("Object_detection", img)
 
+    cv2.imshow("Object_detection", img)
     cv2.waitKey(1)
 
     if keyboard.is_pressed('q'):  # if key 'q' is pressed
