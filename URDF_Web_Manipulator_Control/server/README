@@ -1,0 +1,5 @@
+The launching the manipulator:
+1) Connect the esp32 control board
+2) Start the server
+3) Restart the esp (EN button)
+4) Launch the front (bundle\index.html)
