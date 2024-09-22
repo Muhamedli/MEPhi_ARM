@@ -1,6 +1,7 @@
 import cv2
 from taking import *
 import json
+import keyboard
 
 f = open("Aruco_and_calibration/charuco_board_calibration.json")
 data = json.load(f)
@@ -95,14 +96,13 @@ while True:
     cv2.resizeWindow("Object_detection", width=imageWidth, height=imageHight)
     cv2.imshow("Object_detection", img)
 
-    # Wait for the key press
+    cv2.waitKey(1)
 
-    if cv2.waitKey(1) == ord('f'):
+    if keyboard.is_pressed('q'):  # if key 'q' is pressed
+        break
+    if keyboard.is_pressed('f'):
         if fPressed == 0:
             flag = (flag + 1) % 2
             fPressed = 1
-    elif fPressed == 1:
-        fPressed = 0
-
-    if cv2.waitKey(1) == ord('q'):
-        break
+        elif fPressed == 1:
+            fPressed = 0
