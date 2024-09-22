@@ -2,7 +2,7 @@ import cv2
 from taking import *
 import json
 
-f = open("C:/coding/git/Robot-manipulator/hostcode/Aruco_and_calibration/data.json")
+f = open("Aruco_and_calibration/charuco_board_calibration.json")
 data = json.load(f)
 
 imageHight = 1080
