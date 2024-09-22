@@ -16,7 +16,7 @@ Follow us on [Telegram](https://t.me/engistories) and [VK](https://vk.com/engite
   We have the intention to integrate [ROS2](https://github.com/ros2) and [Gazebo](https://github.com/gazebosim) into our stack.
 
 <p align="center">
-  <img src="Images/jtraj.gif" alt="drawing" width="700"/>
+  <img src="Images/jtraj_2.gif" alt="drawing" width="700"/>
 </p>
  
 # Links
