@@ -1,10 +1,10 @@
-# ENGTM.003
+# MEPhI_ARM
 
 <p align="center">
   <img src="Images/manipulator_mephi.png" alt="drawing" width="700"/> 
 </p>
 
-ENGTM.003 is a research project that is being created by the student association "Engi Teams", MEPhI university. <br />
+MEPhI_ARM is a research project that is being created by the student association "Engi Teams", MEPhI university. <br />
 
 Our robot is a 3D-printed desktop robotics arm, powered by stepper motors. When creating the design, aspects such as the cheapness of the design and the prevalence of components were taken into account, which eventually made the whole robot affordable.<br />
 
