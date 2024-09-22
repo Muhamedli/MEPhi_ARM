@@ -1,9 +1,9 @@
 import cv2
 from taking import *
 import json
+import keyboard
 
-
-f = open("C:/coding/git/Robot-manipulator/hostcode/Aruco_and_calibration/data.json")
+f = open("Aruco_and_calibration/charuco_board_calibration.json")
 data = json.load(f)
 
 imageHight = 1080
@@ -13,9 +13,6 @@ camera_matrix = np.array(data["camera_matrix"])
 dist_coefs = np.array(data["dist_coeff"])
 newcameramtx, roi = cv2.getOptimalNewCameraMatrix(camera_matrix, dist_coefs, (imageWidth, imageHight), 1,
                                                   (imageWidth, imageHight))
-
-frameWidth = 0.51 * 283 / 308
-frameHight = 0.255
 
 flag = 1
 fPressed = 0
@@ -33,16 +30,18 @@ camera.set(cv2.CAP_PROP_FRAME_WIDTH, imageWidth)
 camera.set(cv2.CAP_PROP_FRAME_HEIGHT, imageHight)
 
 tvecArray = []
-filVal = [0,0,0]
+filVal = [0, 0, 0]
+
 
 def RunningAverageAdaptive(newVal, filVal):
-    if(abs(newVal- filVal) > 1.5): 
+    if (abs(newVal - filVal) > 1.5):
         k = 1.5
-    else: 
+    else:
         k = 0.5
 
     filVal += (newVal - filVal) * k
     return filVal
+
 
 while True:
     good, img = camera.read()
@@ -89,22 +88,18 @@ while True:
                     fontColor,
                     thickness,
                     lineType)
-        
 
     cv2.namedWindow("Object_detection", cv2.WINDOW_NORMAL)
     cv2.resizeWindow("Object_detection", width=imageWidth, height=imageHight)
     cv2.imshow("Object_detection", img)
 
-    # Wait for the key press
-    
-    if cv2.waitKey(1) == ord('f'):
+    cv2.waitKey(1)
+
+    if keyboard.is_pressed('q'):  # if key 'q' is pressed
+        break
+    if keyboard.is_pressed('f'):
         if fPressed == 0:
             flag = (flag + 1) % 2
             fPressed = 1
-    elif fPressed == 1:
-        fPressed = 0
-
-    if cv2.waitKey(1) == ord('q'):
-            break
-    
-    
+        elif fPressed == 1:
+            fPressed = 0

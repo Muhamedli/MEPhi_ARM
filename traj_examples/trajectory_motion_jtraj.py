@@ -3,15 +3,19 @@ import spatialmath as sm
 import spatialgeometry as sg
 import swift
 import numpy as np
+import time
 
 env = swift.Swift()
 env.launch(realtime=True)
 
 robot = rtb.models.MEPhI_ARM()
 robot.q = robot.qz
+gripper = robot.grippers[0]
 env.add(robot)
 
-Tep1 = robot.fkine(robot.q) * sm.SE3.Trans(-0.1, -0.2, -0.3) * sm.SE3.OA([0, 0, -1], [0, 1, 0])
+time.sleep(5)
+
+Tep1 = robot.fkine(robot.q) * sm.SE3.Trans(-0.1, 0.2, 0) * sm.SE3.OA([0, 1, 0], [0, 0, 1])
 sol1 = robot.ik_LM(Tep1)
 goal_ax = sg.Axes(0.1, pose=Tep1)
 env.add(goal_ax)
@@ -19,6 +23,11 @@ traj1 = rtb.tools.trajectory.jtraj(robot.qz, sol1[0], 100)
 for i in traj1.q:  # for each joint configuration on trajectory
     robot.q = i  # update the robot state
     env.step(0.01)  # update visualization
+
+for i in range(0, 38):  # Moving gripper
+    # print(i)
+    gripper.q = [i / 1000]
+    env.step(0.01)
 
 array = [[0.2, 0, 0], [0, 0, 0.2], [-0.2, 0, 0], [0, 0, -0.2]]
 
@@ -29,10 +38,10 @@ for el in array:
     env.add(goal_ax)
     traj2 = rtb.tools.trajectory.jtraj(sol1[0], sol2[0], 25)
     for i in traj2.q:
-        # goal_ax = sg.Axes(0.1, pose=robot.fkine(i))
-        # env.add(goal_ax)
+        goal_ax = sg.Axes(0.1, pose=robot.fkine(i))
+        env.add(goal_ax)
         robot.q = i
         env.step(0.02)
         np.set_printoptions(linewidth=100, suppress=True)
-        print(traj2.qd)
+        # print(traj2.qd)
     sol1 = sol2
