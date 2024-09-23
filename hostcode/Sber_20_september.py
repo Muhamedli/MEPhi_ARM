@@ -9,6 +9,8 @@ data = json.load(f)
 imageHight = 1080
 imageWidth = 1920
 
+undistortAtBeginning = 0
+
 camera_matrix = np.array(data["camera_matrix"])
 dist_coefs = np.array(data["dist_coeff"])
 newcameramtx, roi = cv2.getOptimalNewCameraMatrix(camera_matrix, dist_coefs, (imageWidth, imageHight), 1,
@@ -30,7 +32,8 @@ camera.set(cv2.CAP_PROP_FRAME_WIDTH, imageWidth)
 camera.set(cv2.CAP_PROP_FRAME_HEIGHT, imageHight)
 
 tvecArray = []
-filVal = [0, 0, 0]
+filValTvec = [0, 0, 0]
+filValRvec = [0, 0, 0]
 
 cv2.namedWindow("Object_detection", cv2.WINDOW_NORMAL)
 cv2.resizeWindow("Object_detection", width=imageWidth, height=imageHight)
@@ -40,7 +43,7 @@ def RunningAverageAdaptive(newVal, filVal):
     if (abs(newVal - filVal) > 1.5):
         k = 1.5
     else:
-        k = 0.5
+        k = 0.2
 
     filVal += (newVal - filVal) * k
     return filVal
@@ -49,7 +52,8 @@ def RunningAverageAdaptive(newVal, filVal):
 while True:
     good, img = camera.read()
 
-    img = cv2.undistort(img, camera_matrix, dist_coefs, None, newcameramtx)
+    if(undistortAtBeginning):
+        img = cv2.undistort(img, camera_matrix, dist_coefs, None, newcameramtx)
     gray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
     imgToProduse = gray
 
@@ -63,9 +67,11 @@ while True:
             rvec, tvec, _objPoints = cv2.aruco.estimatePoseSingleMarkers(corners, 0.025, camera_matrix, dist_coefs)
             cv2.drawFrameAxes(img, camera_matrix, dist_coefs, rvec, tvec, length=0.025)
             for i in range(len(tvec[0][0])):
-                filVal[i] = RunningAverageAdaptive(tvec[0][0][i], filVal[i])
-                tvec[0][0][i] = filVal[i]
+                filValTvec[i] = RunningAverageAdaptive(tvec[0][0][i], filValTvec[i])
+                #filValRvec[i] = RunningAverageAdaptive(rvec[0][0][i], filValRvec[i])
 
+            tvec[0][0] = filValTvec
+            #rvec[0][0] = filValRvec
             tvec[0][0][2] -= 0.085  # 0.308
 
             #print(list(map(lambda x: round(x/np.pi * 180), rvec[0][0])))
@@ -92,8 +98,10 @@ while True:
                     fontColor,
                     thickness,
                     lineType)
+        
 
-
+    if(not undistortAtBeginning):
+        img = cv2.undistort(img, camera_matrix, dist_coefs, None, newcameramtx)
     cv2.imshow("Object_detection", img)
     cv2.waitKey(1)
 
