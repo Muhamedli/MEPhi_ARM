@@ -35,9 +35,6 @@ tvecArray = []
 filValTvec = [0, 0, 0]
 filValRvec = [0, 0, 0]
 
-cv2.namedWindow("Object_detection", cv2.WINDOW_NORMAL)
-cv2.resizeWindow("Object_detection", width=imageWidth, height=imageHight)
-
 
 def RunningAverageAdaptive(newVal, filVal):
     if (abs(newVal - filVal) > 1.5):
@@ -54,6 +51,7 @@ while True:
 
     if (undistortAtBeginning):
         img = cv2.undistort(img, camera_matrix, dist_coefs, None, newcameramtx)
+
     gray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
     imgToProduse = gray
 
@@ -102,6 +100,8 @@ while True:
     if (undistortAtBeginning):
         img = cv2.undistort(img, camera_matrix, dist_coefs, None, newcameramtx)
 
+    cv2.namedWindow("Object_detection", cv2.WINDOW_NORMAL)
+    cv2.resizeWindow("Object_detection", width=imageWidth, height=imageHight)
     cv2.imshow("Object_detection", img)
     cv2.waitKey(1)
 
