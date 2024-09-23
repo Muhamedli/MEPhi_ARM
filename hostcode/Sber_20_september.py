@@ -9,7 +9,7 @@ data = json.load(f)
 imageHight = 1080
 imageWidth = 1920
 
-undistortAtBeginning = 0
+undistortAtBeginning = False
 
 camera_matrix = np.array(data["camera_matrix"])
 dist_coefs = np.array(data["dist_coeff"])
@@ -27,9 +27,9 @@ fontColor = (147, 20, 255)
 thickness = 2
 lineType = 1
 
-camera = cv2.VideoCapture(0)
-camera.set(cv2.CAP_PROP_FRAME_WIDTH, imageWidth)
-camera.set(cv2.CAP_PROP_FRAME_HEIGHT, imageHight)
+camera = cv2.VideoCapture(0, cv2.CAP_DSHOW)
+camera.set(cv2.CAP_PROP_FRAME_WIDTH, 2000)
+camera.set(cv2.CAP_PROP_FRAME_HEIGHT, 2000)
 
 tvecArray = []
 filValTvec = [0, 0, 0]
@@ -52,7 +52,7 @@ def RunningAverageAdaptive(newVal, filVal):
 while True:
     good, img = camera.read()
 
-    if(undistortAtBeginning):
+    if (undistortAtBeginning):
         img = cv2.undistort(img, camera_matrix, dist_coefs, None, newcameramtx)
     gray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
     imgToProduse = gray
@@ -68,13 +68,13 @@ while True:
             cv2.drawFrameAxes(img, camera_matrix, dist_coefs, rvec, tvec, length=0.025)
             for i in range(len(tvec[0][0])):
                 filValTvec[i] = RunningAverageAdaptive(tvec[0][0][i], filValTvec[i])
-                #filValRvec[i] = RunningAverageAdaptive(rvec[0][0][i], filValRvec[i])
+                # filValRvec[i] = RunningAverageAdaptive(rvec[0][0][i], filValRvec[i])
 
             tvec[0][0] = filValTvec
-            #rvec[0][0] = filValRvec
+            # rvec[0][0] = filValRvec
             tvec[0][0][2] -= 0.085  # 0.308
 
-            #print(list(map(lambda x: round(x/np.pi * 180), rvec[0][0])))
+            # print(list(map(lambda x: round(x/np.pi * 180), rvec[0][0])))
             trans_matrix = cv2.Rodrigues(rvec)
 
             if (flag):
@@ -98,10 +98,10 @@ while True:
                     fontColor,
                     thickness,
                     lineType)
-        
 
-    if(not undistortAtBeginning):
+    if (undistortAtBeginning):
         img = cv2.undistort(img, camera_matrix, dist_coefs, None, newcameramtx)
+
     cv2.imshow("Object_detection", img)
     cv2.waitKey(1)
 

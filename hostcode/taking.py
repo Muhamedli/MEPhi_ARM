@@ -43,7 +43,7 @@ def SolDim(tvec, trans_matrix):
     if(trans_matrix==None):
         Tep = robot.fkine(robot.qr) * sm.SE3.Trans(tvec[0], tvec[1], tvec[2])
     else:
-        print(np.array(trans_matrix[0]).transpose()[1])
+        # print(np.array(trans_matrix[0]).transpose()[1])
         Tep = robot.fkine(robot.qr) * sm.SE3.Trans(tvec[0], tvec[1], tvec[2])*sm.SE3.OA([-i for i in np.array(trans_matrix[0]).transpose()[1]], [-i for i in np.array(trans_matrix[0]).transpose()[2]])
     
     sol = robot.ik_LM(Tep)
