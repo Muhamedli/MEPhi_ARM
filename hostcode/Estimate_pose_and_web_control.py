@@ -6,8 +6,8 @@ import keyboard
 f = open("Aruco_and_calibration/charuco_board_calibration.json")
 data = json.load(f)
 
-imageHight = 1080
 imageWidth = 1920
+imageHight = 1080
 
 undistortAtBeginning = False
 
@@ -70,13 +70,16 @@ while True:
 
             tvec[0][0] = filValTvec
             # rvec[0][0] = filValRvec
-            tvec[0][0][2] -= 0.085  # 0.308
 
-            # print(list(map(lambda x: round(x/np.pi * 180), rvec[0][0])))
+            tvec[0][0][0] -= 0.015
+            tvec[0][0][1] -= 0.03
+            tvec[0][0][2] -= (0.0562 + 0.034)
+            # print(tvec)
+
             trans_matrix = cv2.Rodrigues(rvec)
 
             if (flag):
-                angle_joint = SolDimArray(tvec[0][0], trans_matrix)
+                angle_joint = SolDimArray(tvec[0][0], trans_matrix, True)
 
             text = ""
             for i in range(len(angle_joint)):
@@ -105,11 +108,11 @@ while True:
     cv2.imshow("Object_detection", img)
     cv2.waitKey(1)
 
-    if keyboard.is_pressed('q'):  # if key 'q' is pressed
-        break
     if keyboard.is_pressed('f'):
         if fPressed == 0:
             flag = (flag + 1) % 2
             fPressed = 1
         elif fPressed == 1:
             fPressed = 0
+    if keyboard.is_pressed('q'):  # if key 'q' is pressed
+        break

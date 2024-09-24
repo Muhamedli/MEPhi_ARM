@@ -13,7 +13,7 @@ robot.q = robot.qz
 gripper = robot.grippers[0]
 env.add(robot)
 
-time.sleep(5)
+time.sleep(1)
 
 Tep1 = robot.fkine(robot.q) * sm.SE3.Trans(-0.1, 0.2, 0) * sm.SE3.OA([0, 1, 0], [0, 0, 1])
 sol1 = robot.ik_LM(Tep1)

@@ -39,18 +39,16 @@ def chekTaskPresessing(tvec, sol):
         return 0
 
 
-def SolDim(tvec, trans_matrix):
-    if (trans_matrix == None):
-        Tep = robot.fkine(robot.qr) * sm.SE3.Trans(tvec[0], tvec[1], tvec[2])
-    else:
-        # Убрать комментарии для воспроизведение любой ориентации end-effector (при этом new_y_axis_orientation и текущий Tep закоментить)
-        # Tep = robot.fkine(robot.qr) * sm.SE3.Trans(tvec[0], tvec[1], tvec[2]) * sm.SE3.OA(
-        #     [-i for i in np.array(trans_matrix[0]).transpose()[1]],
-        #     [-i for i in np.array(trans_matrix[0]).transpose()[2]])
+def SolDim(tvec, trans_matrix, const_orient):
+    if (const_orient == True):
         new_y_axis_orientation = [-i for i in np.array(trans_matrix[0]).transpose()[1]]
         new_y_axis_orientation[2] = 0
         Tep = robot.fkine(robot.qr) * sm.SE3.Trans(tvec[0], tvec[1], tvec[2]) * sm.SE3.OA(new_y_axis_orientation,
                                                                                           [0, 0, 1])
+    else:
+        Tep = robot.fkine(robot.qr) * sm.SE3.Trans(tvec[0], tvec[1], tvec[2]) * sm.SE3.OA(
+            [-i for i in np.array(trans_matrix[0]).transpose()[1]],
+            [-i for i in np.array(trans_matrix[0]).transpose()[2]])
 
     sol = robot.ik_LM(Tep)
 
@@ -61,9 +59,9 @@ def SolDim(tvec, trans_matrix):
         return robot.q
 
 
-def SolDimArray(tvec, trans_matrix):
+def SolDimArray(tvec, trans_matrix, const_orient):
     # sol = SolDim(list(map(lambda x: round(x, ndigits = 4),tvec)))
-    sol = SolDim(tvec, trans_matrix)
+    sol = SolDim(tvec, trans_matrix, const_orient)
     robot.q = sol
     env.step()
     for i in range(len(sol)):
