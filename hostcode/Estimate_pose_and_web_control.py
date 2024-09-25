@@ -71,7 +71,7 @@ while True:
             tvec[0][0] = filValTvec
             # rvec[0][0] = filValRvec
 
-            tvec[0][0][0] -= 0.015
+            tvec[0][0][0] -= 0.005
             tvec[0][0][1] -= 0.03
             tvec[0][0][2] -= (0.0562 + 0.034)
             # print(tvec)

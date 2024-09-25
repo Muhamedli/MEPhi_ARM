@@ -64,7 +64,7 @@ void setup() {
   Serial.begin(115200);
 
   if(!myservo.attached()) {
-    myservo.attach(13); 
+    myservo.attach(13);
   }
 }
 void set_Speed(float speedMass[6]) {
@@ -75,7 +75,7 @@ void set_Speed(float speedMass[6]) {
   stepper5.setMaxSpeedDeg(speedMass[4]);  // в градусах/сек
   stepper6.setMaxSpeedDeg(speedMass[5]);  // в градусах/сек
 }
-void Go(){ 
+void Go(){
   if (!stepper1.tick()) {
     stepper1.setTargetDeg(pos[0], ABSOLUTE);
   }
@@ -97,7 +97,7 @@ void Go(){
   myservo.write(pos[6]);
 }
 // строка типа: 10.0/20.0/ ... 15.0/15.0/ ... 10.0/10.0/ ... 10.0
-// сперва 6 углов для шаговиков, потом 6 скоростей для шаговиков, 
+// сперва 6 углов для шаговиков, потом 6 скоростей для шаговиков,
 // потом 6 ускорений для шаговиков, последним указывается угол для серво
 void Read(const Text& COM_port, float pos[], float speed[], bool withServo) {
   int i = 0;
