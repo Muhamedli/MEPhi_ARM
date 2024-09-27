@@ -102,7 +102,7 @@ void Read(const Text& COM_port, float pos[], float speed[], bool withServo) {
 String fast_read() {
   String ret;
   int c = Serial.read();
-  while (Serial.available() > 1) {
+  while (Serial.available() > 0) {
     ret += (char)c;
     c = Serial.read();
   }
@@ -113,6 +113,7 @@ void InputData() {
   if (Serial.available() > 1) {
     isReadyAnnounced = false;
     String COM_port = fast_read();
+    // Serial.println(COM_port);
     if(COM_port == "stop") {
       stepper1.brake();
       stepper2.brake();

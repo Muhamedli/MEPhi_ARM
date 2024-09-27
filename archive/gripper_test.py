@@ -10,10 +10,10 @@ env = swift.Swift()
 env.launch(realtime=True)
 
 robot = rtb.models.MEPhI_ARM()
-robot.q = robot.qz
+robot.q = robot.qr
 env.add(robot)
 
-Tep1 = robot.fkine(robot.q) * sm.SE3.Trans(0, -0.1, -0.2) * sm.SE3.OA([0, 0, -1], [0, 1, 0])
+Tep1 = robot.fkine(robot.q) * sm.SE3.Trans(0, 0, 0.2) * sm.SE3.OA([0, 1, 0], [0, 0, 1])
 sol1 = robot.ik_LM(Tep1)
 goal_ax = sg.Axes(0.1, pose=Tep1)
 env.add(goal_ax)
