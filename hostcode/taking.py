@@ -2,33 +2,35 @@ import roboticstoolbox as rtb
 import spatialmath as sm
 import numpy as np
 from swift import Swift
-import time
 
 hight = 0.308
 
 robot = rtb.models.MEPhI_ARM()
 robot.q = robot.qz
 
-# env = Swift()
-# env.launch(realtime=True)
-# env.add(robot)
+env = Swift()
+env.launch(realtime=True)
+env.add(robot)
 
 
-def SolDimArray(tvec, trans_matrix, const_orient = True, q = robot.qr):
-    sol = SolDim(tvec, trans_matrix, const_orient, q)
+def SolDegrees(tvec, trans_matrix, q = robot.qr, const_orient = True):
+    sol = SolFinder(tvec, trans_matrix, const_orient, q)
     robot.q = sol
-    # env.step()
+    env.step()
     sol = list(map(lambda x : round((x / np.pi * 180), ndigits=1), sol))
     return sol
 
 
-def TrajFromQToPoint(tvec, trans_matrix, const_orient = True, q = robot.qr):
-    sol = SolDim(tvec, trans_matrix, const_orient, q)
+def TrajFromQToPoint(tvec, trans_matrix, q = robot.qr, const_orient = True):
+    sol = SolFinder(tvec, trans_matrix, const_orient, q)
     traj = rtb.tools.trajectory.jtraj(q, sol, 25)
     return traj
 
 
-def SolDim(tvec, trans_matrix, const_orient, q):
+def SolFinder(tvec, trans_matrix, const_orient, q):
+    
+    '''поиск и верефикация решения в конечной точке'''
+
     new_y_axis_orientation = [-i for i in np.array(trans_matrix).transpose()[1]]
     if (const_orient == True):
         new_y_axis_orientation[2] = 0
@@ -47,6 +49,9 @@ def SolDim(tvec, trans_matrix, const_orient, q):
 
 
 def chekTaskPresessing(tvec, sol, q):
+
+    '''функция для сопоставления найденного решения и входных данных'''
+
     tvec_env, rvec_env = FromQtoVec(q, sol)
     if (abs(tvec[2]-tvec_env[2]) + abs(tvec[0] - tvec_env[0]) + abs(tvec[1] - tvec_env[1]) < 0.005):
         return 1
@@ -54,6 +59,9 @@ def chekTaskPresessing(tvec, sol, q):
         return 0
 
 def FromQtoVec(qBeg, qEnd):
+
+    '''функция для нахождения вектора перемещения и матрицы перехода от одной конфигурации к другой'''
+    
     tvec = [0, 0, 0]
     end_rmatx = [[],[],[]]
     beg_rmatx = [[],[],[]]
@@ -68,8 +76,8 @@ def FromQtoVec(qBeg, qEnd):
     trans_mtx = np.linalg.inv(np.array(end_rmatx)).dot(np.array(beg_rmatx))
     return tvec, trans_mtx
 
-def fromQtoR():
+def trajFromCurToWork():
+    '''возвращает траеторию из текущего положения до рабочьего'''
     tvec, trans_mtx = FromQtoVec(robot.q, robot.qr)
     sol  = TrajFromQToPoint(tvec, trans_mtx, False, robot.q)
     return sol
-fromQtoR()
