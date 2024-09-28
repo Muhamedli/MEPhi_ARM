@@ -80,7 +80,7 @@ while True:
             trans_matrix = cv2.Rodrigues(rvec)
 
             if (flag):
-                angle_joint = SolDimArray(tvec[0][0], trans_matrix[0])
+                angle_joint = SolDegrees(tvec[0][0], trans_matrix[0])
 
             text = ""
             for i in range(len(angle_joint)):
