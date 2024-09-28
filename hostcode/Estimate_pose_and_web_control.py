@@ -8,6 +8,7 @@ data = json.load(f)
 
 imageWidth = 1920
 imageHight = 1080
+cameraID = 0
 
 undistortAtBeginning = False
 
@@ -27,9 +28,9 @@ fontColor = (147, 20, 255)
 thickness = 2
 lineType = 1
 
-camera = cv2.VideoCapture(0, cv2.CAP_DSHOW)
-camera.set(cv2.CAP_PROP_FRAME_WIDTH, 2000)
-camera.set(cv2.CAP_PROP_FRAME_HEIGHT, 2000)
+camera = cv2.VideoCapture(cameraID, cv2.CAP_DSHOW)
+camera.set(cv2.CAP_PROP_FRAME_WIDTH, imageWidth+10)
+camera.set(cv2.CAP_PROP_FRAME_HEIGHT, imageHight+10)
 
 tvecArray = []
 filValTvec = [0, 0, 0]
@@ -79,7 +80,7 @@ while True:
             trans_matrix = cv2.Rodrigues(rvec)
 
             if (flag):
-                angle_joint = SolDimArray(tvec[0][0], trans_matrix, True)
+                angle_joint = SolDimArray(tvec[0][0], trans_matrix[0])
 
             text = ""
             for i in range(len(angle_joint)):
