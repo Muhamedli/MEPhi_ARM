@@ -48,8 +48,7 @@ def SolDim(tvec, trans_matrix, const_orient, q):
 
 def chekTaskPresessing(tvec, sol, q):
     tvec_env, rvec_env = FromQtoVec(q, sol)
-    # print(tvec, tvec_env)
-    if (abs(tvec[2]) - abs(tvec_env[2]) + abs(tvec[0] - tvec_env[0]) + abs(tvec[1] - tvec_env[1]) < 0.005):
+    if (abs(tvec[2]-tvec_env[2]) + abs(tvec[0] - tvec_env[0]) + abs(tvec[1] - tvec_env[1]) < 0.005):
         return 1
     else:
         return 0
@@ -59,22 +58,18 @@ def FromQtoVec(qBeg, qEnd):
     end_rmatx = [[],[],[]]
     beg_rmatx = [[],[],[]]
 
-    # СЛЕДИТЬ ЗА НАПРАВЛЕНИЕМ ОСЕЙ БЛЕД!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-
     for i in range(3):
-        if i == 0:
-            tvec[i] = ((robot.fkine(qEnd).A)[i][3] - (robot.fkine(qBeg).A)[i][3])
-        else:
-            tvec[i] = ((robot.fkine(qEnd).A)[i][3] - (robot.fkine(qBeg).A)[i][3]) * -1
-
+        tvec[i] = ((robot.fkine(qEnd).A)[i][3] - (robot.fkine(qBeg).A)[i][3])
         beg_rmatx[i] = list((robot.fkine(qBeg).A)[i][:3])
         end_rmatx[i] = list((robot.fkine(qEnd).A)[i][:3])
+    
+    tvec = np.transpose(np.matmul(np.linalg.inv(np.array(beg_rmatx)), np.array(tvec).transpose()))
 
     trans_mtx = np.linalg.inv(np.array(end_rmatx)).dot(np.array(beg_rmatx))
     return tvec, trans_mtx
 
 def fromQtoR():
     tvec, trans_mtx = FromQtoVec(robot.q, robot.qr)
-    tvec[2] *= -1
     sol  = TrajFromQToPoint(tvec, trans_mtx, False, robot.q)
     return sol
+fromQtoR()
