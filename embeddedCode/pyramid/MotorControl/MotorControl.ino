@@ -11,12 +11,12 @@ GStepper<STEPPER2WIRE> stepper6(200 * 16 * 50, 33, 32);
 
 Servo myservo;
 
-float accel_stepper1 = 7.5;
-float accel_stepper2 = 10.0;
-float accel_stepper3 = 7.5;
-float accel_stepper4 = 15.0;
-float accel_stepper5 = 10.0;
-float accel_stepper6 = 10.0;
+float accel_stepper1 = 4000;
+float accel_stepper2 = 4000;
+float accel_stepper3 = 4000;
+float accel_stepper4 = 4000;
+float accel_stepper5 = 4000;
+float accel_stepper6 = 4000;
 
 float pos[7] = { 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0};
 float speedMass[6] = { 15.0, 10.0, 15.0, 25.0, 15.0, 20.0 };
@@ -26,31 +26,31 @@ bool isReadyAnnounced = false;
 void setup() {
   stepper1.setRunMode(FOLLOW_POS);
   stepper1.setAccelerationDeg(accel_stepper1);
-  stepper1.autoPower(true);
+  // stepper1.autoPower(true);
 
   stepper2.setRunMode(FOLLOW_POS);
   stepper2.setAccelerationDeg(accel_stepper2);
-  stepper2.autoPower(true);
+  // stepper2.autoPower(true);
 
   stepper3.setRunMode(FOLLOW_POS);
   stepper3.setAccelerationDeg(accel_stepper3);
-  stepper3.autoPower(true);
+  // stepper3.autoPower(true);
 
   stepper4.setRunMode(FOLLOW_POS);
   stepper4.setAccelerationDeg(accel_stepper4);
-  stepper4.autoPower(true);
+  // stepper4.autoPower(true);
 
   stepper5.setRunMode(FOLLOW_POS);
   stepper5.setAccelerationDeg(accel_stepper5);
-  stepper5.autoPower(true);
+  // stepper5.autoPower(true);
 
   stepper6.setRunMode(FOLLOW_POS);
   stepper6.setAccelerationDeg(accel_stepper6);
-  stepper6.autoPower(true);
+  // stepper6.autoPower(true);
 
   setSpeed(speedMass);
 
-  Serial.begin(115200);
+  Serial.begin(921600);
 
   if(!myservo.attached()) {
     myservo.attach(13);
@@ -110,7 +110,7 @@ String fast_read() {
 }
 
 void InputData() {
-  if (Serial.available() > 1) {
+  if (Serial.available() > 0) {
     isReadyAnnounced = false;
     String COM_port = fast_read();
     // Serial.println(COM_port);

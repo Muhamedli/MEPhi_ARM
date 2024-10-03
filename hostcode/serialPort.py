@@ -1,5 +1,6 @@
 import serial.tools.list_ports
 import taking as tk
+from numpy import pi
 
 def serialBegin(port = 5, baytrate = 115200):
     global ser
@@ -7,8 +8,8 @@ def serialBegin(port = 5, baytrate = 115200):
     ser = serial.Serial(port, baytrate)
 
 def serialSend(deg, speed):
-    dataArray = deg
-    dataArray.extend(speed)
+    dataArray = list(map(lambda x : round((x / pi * 180), ndigits=1), deg))
+    dataArray.extend(list(map(lambda x : round((x / pi * 180), ndigits=1), speed)))
     output_text = ""
     output_text = "/".join(str(i) for i in dataArray)
 
@@ -22,7 +23,8 @@ def serialRead():
     print(flag)
 
 def sendTraj(traj):
-    for i in len(traj.q):
+
+    for i in range(len((traj.q))):
         tk.robot.q = traj.q[i]
         serialSend(traj.q[i], traj.qd[i])
         serialRead()

@@ -8,22 +8,22 @@ hight = 0.308
 robot = rtb.models.MEPhI_ARM()
 robot.q = robot.qz
 
-env = Swift()
-env.launch(realtime=True)
-env.add(robot)
+# env = Swift()
+# env.launch(realtime=True)
+# env.add(robot)
 
 
 def SolDegrees(tvec, trans_matrix, q = robot.qr, const_orient = True):
     sol = SolFinder(tvec, trans_matrix, const_orient, q)
     robot.q = sol
-    env.step()
+    # env.step()
     sol = list(map(lambda x : round((x / np.pi * 180), ndigits=1), sol))
     return sol
 
 
 def TrajFromQToPoint(tvec, trans_matrix, q = robot.qr, const_orient = True):
     sol = SolFinder(tvec, trans_matrix, const_orient, q)
-    traj = rtb.tools.trajectory.jtraj(q, sol, 25)
+    traj = rtb.tools.trajectory.jtraj(q, sol, 50)
     return traj
 
 
@@ -79,5 +79,5 @@ def FromQtoVec(qBeg, qEnd):
 def trajFromCurToWork():
     '''возвращает траеторию из текущего положения до рабочьего'''
     tvec, trans_mtx = FromQtoVec(robot.q, robot.qr)
-    sol  = TrajFromQToPoint(tvec, trans_mtx, False, robot.q)
+    sol  = TrajFromQToPoint(tvec, trans_mtx, robot.q, False)
     return sol
