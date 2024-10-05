@@ -1,6 +1,7 @@
 #include <GyverStepper.h>
 #include <ESP32Servo.h>
 #include <StringUtils.h>
+#define traj_array_len 50
 
 GStepper<STEPPER2WIRE> stepper1(200 * 16 * 11, 18, 5);
 GStepper<STEPPER2WIRE> stepper2(200 * 16 * 12, 17, 16);
@@ -11,17 +12,24 @@ GStepper<STEPPER2WIRE> stepper6(200 * 16 * 50, 33, 32);
 
 Servo myservo;
 
-float accel_stepper1 = 4000;
-float accel_stepper2 = 4000;
-float accel_stepper3 = 4000;
-float accel_stepper4 = 4000;
-float accel_stepper5 = 4000;
-float accel_stepper6 = 4000;
+float accel_stepper1 = 0;
+float accel_stepper2 = 0;
+float accel_stepper3 = 0;
+float accel_stepper4 = 0;
+float accel_stepper5 = 0;
+float accel_stepper6 = 0;
 
 float pos[7] = { 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0};
 float speedMass[6] = { 15.0, 10.0, 15.0, 25.0, 15.0, 20.0 };
 
 bool isReadyAnnounced = false;
+int package_number = 50;
+int package_read_index = 0;
+int package_executive_index = 0;
+
+float traj_speed[traj_array_len][6];
+float traj_pos[traj_array_len][7];
+bool executive_flag = false;
 
 void setup() {
   stepper1.setRunMode(FOLLOW_POS);
@@ -65,32 +73,35 @@ void setSpeed(float speedMass[6]) {
   stepper6.setMaxSpeedDeg(speedMass[5]);  // в градусах/сек
 }
 void Go(){
-  if (!stepper1.tick()) {
-    stepper1.setTargetDeg(pos[0], ABSOLUTE);
+  if(executive_flag){
+    //Serial.println("in");
+    setSpeed(traj_speed[package_executive_index]);
+    if (!stepper1.tick()) {
+      stepper1.setTargetDeg(traj_pos[package_executive_index][0], ABSOLUTE);
+    }
+    if (!stepper2.tick()) {
+      stepper2.setTargetDeg(traj_pos[package_executive_index][1], ABSOLUTE);
+    }
+    if (!stepper3.tick()) {
+      stepper3.setTargetDeg(traj_pos[package_executive_index][2], ABSOLUTE);
+    }
+    if (!stepper4.tick()) {
+      stepper4.setTargetDeg(traj_pos[package_executive_index][3], ABSOLUTE);
+    }
+    if (!stepper5.tick()) {
+      stepper5.setTargetDeg(traj_pos[package_executive_index][4], ABSOLUTE);
+    }
+    if (!stepper6.tick()) {
+      stepper6.setTargetDeg(traj_pos[package_executive_index][5], ABSOLUTE);
+    }
+    myservo.write(traj_pos[package_executive_index][6]);
   }
-  if (!stepper2.tick()) {
-    stepper2.setTargetDeg(pos[1], ABSOLUTE);
-  }
-  if (!stepper3.tick()) {
-    stepper3.setTargetDeg(pos[2], ABSOLUTE);
-  }
-  if (!stepper4.tick()) {
-    stepper4.setTargetDeg(pos[3], ABSOLUTE);
-  }
-  if (!stepper5.tick()) {
-    stepper5.setTargetDeg(pos[4], ABSOLUTE);
-  }
-  if (!stepper6.tick()) {
-    stepper6.setTargetDeg(pos[5], ABSOLUTE);
-  }
-  myservo.write(pos[6]);
 }
 // строка типа: 10.0/20.0/ ... 15.0/15.0/ ... 10.0/10.0/ ... 10.0
 // сперва 6 углов для шаговиков, потом 6 скоростей для шаговиков,
 // последним указывается угол для серво
 void Read(const Text& COM_port, float pos[], float speed[], bool withServo) {
-  int i = 0;
-  for(i; i < 6; i++) {
+  for(int i = 0; i < 6; i++) {
     pos[i] = COM_port.getSub(i, '/').toFloat();
     speed[i] = COM_port.getSub(i + 6, '/').toFloat();
   }
@@ -111,7 +122,7 @@ String fast_read() {
 
 void InputData() {
   if (Serial.available() > 0) {
-    isReadyAnnounced = false;
+    
     String COM_port = fast_read();
     // Serial.println(COM_port);
     if(COM_port == "stop") {
@@ -122,16 +133,34 @@ void InputData() {
       stepper5.brake();
       stepper6.brake();
     }
-    else {
-      Read(COM_port, pos, speedMass, true);
-      setSpeed(speedMass);
+    else if(COM_port == "101"){
+      package_number = max(package_read_index - 1, 0);
+      package_read_index = 0;
+      isReadyAnnounced = false;
+      executive_flag = true;
+      //Serial.println(package_number);
     }
+    else {
+      Read(COM_port, traj_pos[package_read_index], traj_speed[package_read_index], false);
+      package_read_index += 1;
+      Serial.print(1);
+    }
+
   }
 }
 void OutputData() {
   if (!isReadyAnnounced && !stepper1.tick() && !stepper2.tick() && !stepper3.tick() && !stepper4.tick() && !stepper5.tick() && !stepper6.tick()) {
-    Serial.print('1');
     isReadyAnnounced = true;
+    if(package_executive_index == package_number){
+      executive_flag = false;
+      package_executive_index = 0;
+      Serial.print(1); // Добавить спец символ для отправки новой траектории
+    }
+    else{
+      //Serial.println(package_executive_index);
+      package_executive_index += 1;
+      isReadyAnnounced = false;
+    }
   }
 }
 void loop() {

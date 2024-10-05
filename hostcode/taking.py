@@ -8,9 +8,9 @@ hight = 0.308
 robot = rtb.models.MEPhI_ARM()
 robot.q = robot.qz
 
-# env = Swift()
-# env.launch(realtime=True)
-# env.add(robot)
+env = Swift()
+env.launch(realtime=True)
+env.add(robot)
 
 
 def SolDegrees(tvec, trans_matrix, q = robot.qr, const_orient = True):
@@ -27,13 +27,13 @@ def TrajFromQToPoint(tvec, trans_matrix, q = robot.qr, const_orient = True):
     return traj
 
 
-def SolFinder(tvec, trans_matrix, const_orient, q):
+def SolFinder(tvec, trans_matrix, const_orient = True ,  q = robot.qr):
     
     '''поиск и верефикация решения в конечной точке'''
 
     new_y_axis_orientation = [-i for i in np.array(trans_matrix).transpose()[1]]
     if (const_orient == True):
-        new_y_axis_orientation[2] = 0
+        new_y_axis_orientation[1] = 1 #Возможно здесь нужно будет потом заменить на ноль
         new_z_axis_orientation = [0, 0, 1]
     else:
         new_z_axis_orientation = [-i for i in np.array(trans_matrix).transpose()[2]]
@@ -76,8 +76,6 @@ def FromQtoVec(qBeg, qEnd):
     trans_mtx = np.linalg.inv(np.array(end_rmatx)).dot(np.array(beg_rmatx))
     return tvec, trans_mtx
 
-def trajFromCurToWork():
-    '''возвращает траеторию из текущего положения до рабочьего'''
-    tvec, trans_mtx = FromQtoVec(robot.q, robot.qr)
-    sol  = TrajFromQToPoint(tvec, trans_mtx, robot.q, False)
+def trajFromCurToGiven(qFinish):
+    sol  = rtb.tools.trajectory.jtraj(robot.q, qFinish, 50)
     return sol
