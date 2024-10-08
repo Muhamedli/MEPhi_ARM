@@ -75,12 +75,14 @@ while True:
             tvec[0][0][0] -= 0.005
             tvec[0][0][1] -= 0.03
             tvec[0][0][2] -= (0.0562 + 0.034)
-            # print(tvec)
 
             trans_matrix = cv2.Rodrigues(rvec)
 
+            trans_matrix[0][1] = [-i for i in np.array(trans_matrix[0])[1]]
+            trans_matrix[0][2] = [-i for i in np.array(trans_matrix[0])[2]]
+
             if (flag):
-                angle_joint = SolDegrees(tvec[0][0], trans_matrix[0])
+                angle_joint = SolDegrees(tvec[0][0], trans_matrix[0], const_orient=True)
 
             text = ""
             for i in range(len(angle_joint)):

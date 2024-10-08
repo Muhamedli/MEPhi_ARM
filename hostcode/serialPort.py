@@ -7,7 +7,7 @@ def serialBegin(port = 5, baytrate = 115200):
     global ser
     port = f"COM{port}"  # Replace with the appropriate COM port name
     ser = serial.Serial(port, baytrate)
-    time.sleep(0.5) # чтобы esp32 успела инициализироваться
+    time.sleep(1) # чтобы esp32 успела инициализироваться
 
 def serialSend(deg, speed):
     dataArray = list(map(lambda x : round((x / pi * 180), ndigits=1), deg))
@@ -22,12 +22,12 @@ def serialRead():
     flag = 0
     while(not flag):
         flag = ser.read().decode('utf-8')
-    print(flag)
+    # print(flag)
 
 def sendTraj(traj):
     for i in range(len((traj.q))):
-        traj.q[i][1] = traj.q[i][1] * -1
         tk.robot.q = traj.q[i]
+        traj.q[i][1] = traj.q[i][1] * -1
         tk.env.step()
         serialSend(traj.q[i], traj.qd[i])
         serialRead()
