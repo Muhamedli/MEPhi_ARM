@@ -21,10 +21,10 @@ def SolDegrees(tvec, trans_matrix, q=robot.qr, const_orient=True):
     return sol
 
 
-def TrajFromQToPoint(tvec, trans_matrix, q=robot.qr, const_orient=True):
-    sol = SolFinder(tvec, trans_matrix, const_orient, q)
-    traj = rtb.tools.trajectory.jtraj(q, sol, 50)
-    return traj
+# def TrajFromQToPoint(tvec, trans_matrix, q=robot.qr, const_orient=True):
+#     sol = SolFinder(tvec, trans_matrix, const_orient, q)
+#     traj = rtb.tools.trajectory.jtraj(q, sol, 10)
+#     return traj
 
 
 def SolFinder(tvec, trans_matrix, const_orient=True, q=robot.qr):
@@ -79,5 +79,5 @@ def FromQtoVec(qBeg, qEnd):
 
 
 def trajFromCurToGiven(qFinish):
-    sol = rtb.tools.trajectory.jtraj(robot.q, qFinish, 50)
+    sol = rtb.tools.trajectory.jtraj(robot.q, qFinish, 30)
     return sol

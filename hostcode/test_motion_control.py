@@ -8,17 +8,23 @@ sp.serialBegin(baytrate = 921600)
 traj = tk.trajFromCurToGiven(tk.robot.qr)
 sp.sendTraj(traj)
 
-traj = tk.trajFromCurToGiven(tk.SolFinder([0, 0, 0.1], np.eye(3), q =  tk.robot.q))
+traj = tk.trajFromCurToGiven(tk.SolFinder([0, 0.0, 0.1], np.eye(3), q =  tk.robot.q))
 sp.sendTraj(traj)
 
-for i in range(len(traj.q)-1):
-    times = [0, 0, 0, 0, 0, 0]
-    for j in range(6):
-        if(traj.qd[i+1][j]!=0):
-            times[j] = (round(traj.q[i+1][j] * np.pi/180, 3)-round(traj.q[i][j]*np.pi/180, 3))/(traj.qd[i+1][j]*np.pi/180)
-        else:
-            times[j] = 0
-    print(times)
+traj = tk.trajFromCurToGiven(tk.SolFinder([0, 0, 0.05], np.eye(3), q =  tk.robot.q))
+sp.sendTraj(traj)
+#
+# traj = tk.trajFromCurToGiven(tk.SolFinder([0, 0, 0.05], np.eye(3), q =  tk.robot.q))
+# sp.sendTraj(traj)
+
+# for i in range(len(traj.q)-1):
+#     times = [0, 0, 0, 0, 0, 0]
+#     for j in range(6):
+#         if(traj.qd[i+1][j]!=0):
+#             times[j] = (round(traj.q[i+1][j] * np.pi/180, 3)-round(traj.q[i][j]*np.pi/180, 3))/(traj.qd[i+1][j]*np.pi/180)
+#         else:
+#             times[j] = 0
+#     print(times)
 
 
 # deg = [0.0, 0.0, 0.0, 0.0, 0.0, 0.0]
