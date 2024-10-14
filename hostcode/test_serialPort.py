@@ -11,8 +11,8 @@ sp.serialBegin(baytrate = 921600)
 # sp.sendTraj(traj)
 
 #ЕБАНЫЕ радианы!!!
-deg = [1.6, 1.4, 2.5, 2.8, 2.7, 0.0]
-speed = [1.0] * 6
+deg = [0.0, 0.0, 0.4, 0.0, 0.0, 0.0]
+speed = [0.5] * 6
 
 sp.serialSend(deg, speed)
 sp.serialRead()
@@ -21,4 +21,14 @@ sp.serialRead()
 # sp.serialRead()
 
 sp.ser.write(bytes("101a", 'utf-8'))
+sp.serialRead()
+sp.serialRead()
+
+deg = [0.0, 0.0, 0.0, 0.0, 0.0, 0.0]
+speed = [0.5] * 6
+
+sp.serialSend(deg, speed)
+sp.serialRead()
+sp.ser.write(bytes("101a", 'utf-8'))
+sp.serialRead()
 sp.serialRead()

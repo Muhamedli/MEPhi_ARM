@@ -1,22 +1,22 @@
 import roboticstoolbox as rtb
 import spatialmath as sm
 import numpy as np
-from swift import Swift
+import swift
 
 hight = 0.308
 
 robot = rtb.models.MEPhI_ARM()
 robot.q = robot.qz
 
-env = Swift()
-env.launch(realtime=True)
-env.add(robot)
+# env = swift.Swift()
+# env.launch(realtime=True)
+# env.add(robot)
 
 
 def SolDegrees(tvec, trans_matrix, q=robot.qr, const_orient=True):
     sol = SolFinder(tvec, trans_matrix, const_orient, q)
     robot.q = sol
-    env.step()
+    # env.step()
     sol = list(map(lambda x: round((x / np.pi * 180), ndigits=1), sol))
     return sol
 
@@ -79,5 +79,5 @@ def FromQtoVec(qBeg, qEnd):
 
 
 def trajFromCurToGiven(qFinish):
-    sol = rtb.tools.trajectory.jtraj(robot.q, qFinish, 30)
+    sol = rtb.tools.trajectory.jtraj(robot.q, qFinish, 40)
     return sol

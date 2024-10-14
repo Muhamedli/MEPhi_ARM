@@ -3,7 +3,8 @@
 #include <ESP32Servo.h>
 #include <StringUtils.h>
 
-#define traj_array_len 30
+#define traj_array_len 50
+#define LED_BUILTIN 2
 
 GStepper<STEPPER2WIRE> stepper1(200 * 16 * 11, 18, 5);
 GStepper<STEPPER2WIRE> stepper2(200 * 16 * 12, 17, 16);
@@ -25,16 +26,19 @@ float pos[7] = {0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0};
 float speedMass[6] = {15.0, 10.0, 15.0, 25.0, 15.0, 20.0};
 
 bool isReadyAnnounced = false;
+bool executive_flag = false;
 int package_number = traj_array_len;
 int package_read_index = 0;
 int package_executive_index = 0;
 
 float traj_speed[traj_array_len][6];
 float traj_pos[traj_array_len][7];
-bool executive_flag = false;
+
 
 void setup()
 {
+  pinMode(LED_BUILTIN, OUTPUT);
+  
   stepper1.setRunMode(FOLLOW_POS);
   stepper1.setAccelerationDeg(accel_stepper1);
   // stepper1.autoPower(true);
@@ -83,7 +87,6 @@ void Go()
 {
   if (executive_flag)
   {
-    // Serial.println("in");
     setSpeed(traj_speed[package_executive_index]);
     if (!stepper1.tick())
     {
@@ -160,9 +163,11 @@ void InputData()
     {
       package_number = max(package_read_index - 1, 0);
       package_read_index = 0;
+      package_executive_index = 0;
       isReadyAnnounced = false;
       executive_flag = true;
-      Serial.print(3);
+
+      Serial.print(2);
     }
     else
     {
@@ -174,19 +179,20 @@ void InputData()
 }
 void OutputData()
 {
-  if (!isReadyAnnounced && !stepper1.tick() && !stepper2.tick() && !stepper3.tick() && !stepper4.tick() && !stepper5.tick() && !stepper6.tick())
+  if (executive_flag && !isReadyAnnounced && !stepper1.tick() && !stepper2.tick() && !stepper3.tick() && !stepper4.tick() && !stepper5.tick() && !stepper6.tick())
   {
+    digitalWrite(LED_BUILTIN, HIGH);  
     isReadyAnnounced = true;
-    if (package_executive_index == package_number-1)
-    { 
-      Serial.print(2);
+    if (package_executive_index == package_number)
+    {                      
+      digitalWrite(LED_BUILTIN, LOW);    
+      Serial.print(3);
       executive_flag = false;
       package_executive_index = 0;
-       // Добавить спец символ для отправки новой траектории
     }
     else
     {
-      //Serial.print(package_executive_index);
+
       package_executive_index += 1;
       isReadyAnnounced = false;
     }

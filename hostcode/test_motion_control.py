@@ -3,18 +3,18 @@ import serialPort as sp
 import time
 import numpy as np
 
-sp.serialBegin(baytrate = 921600)
+sp.serialBegin(port = 5,baytrate = 921600)
 
 traj = tk.trajFromCurToGiven(tk.robot.qr)
 sp.sendTraj(traj)
 
-traj = tk.trajFromCurToGiven(tk.SolFinder([0, 0.0, 0.1], np.eye(3), q =  tk.robot.q))
+traj = tk.trajFromCurToGiven(tk.SolFinder([0, 0.0, 0.15], np.eye(3), q =  tk.robot.q))
 sp.sendTraj(traj)
 
-traj = tk.trajFromCurToGiven(tk.SolFinder([0, 0, 0.05], np.eye(3), q =  tk.robot.q))
+traj = tk.trajFromCurToGiven(tk.SolFinder([0, 0, -0.05], np.eye(3), q =  tk.robot.q))
 sp.sendTraj(traj)
-#
-# traj = tk.trajFromCurToGiven(tk.SolFinder([0, 0, 0.05], np.eye(3), q =  tk.robot.q))
+
+# traj = tk.trajFromCurToGiven(tk.SolFinder([0, 0, -0.05], np.eye(3), q =  tk.robot.q))
 # sp.sendTraj(traj)
 
 # for i in range(len(traj.q)-1):
@@ -29,18 +29,17 @@ sp.sendTraj(traj)
 
 # deg = [0.0, 0.0, 0.0, 0.0, 0.0, 0.0]
 # speed = [0.4] * 6
-#
-# for i in range(20):
-#     deg[1]-=0.02
-#     deg[2]+=0.02
-#     deg[4]+=0.05
-#
+
+# for i in range(50):
+#     deg[1]-=0.00
+#     deg[2]-=0.002
+#     deg[4]+=0.00
+
 #     sp.serialSend(deg, speed)
 #     sp.serialRead()
-#
-#
+
+
 # data = "101a"
 # sp.ser.write(data.encode('raw_unicode_escape'))
-# print(data.encode('raw_unicode_escape'))
-# output = sp.ser.read().decode()
-# print(output)
+# sp.serialRead()
+# sp.serialRead()

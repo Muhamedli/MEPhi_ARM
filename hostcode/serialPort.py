@@ -2,7 +2,6 @@ from tkinter.constants import ROUND
 
 import serial
 import taking as tk
-from numpy import pi
 import time
 
 
@@ -10,7 +9,8 @@ def serialBegin(port=5, baytrate=115200):
     global ser
     port = f"COM{port}"  # Replace with the appropriate COM port name
     ser = serial.Serial(port, baytrate)
-    time.sleep(3)  # чтобы esp32 успела инициализироваться
+    print("wew")
+    time.sleep(1)  # чтобы esp32 успела инициализироваться
 
 
 def serialSend(deg, speed):
@@ -23,23 +23,22 @@ def serialSend(deg, speed):
 
 
 def serialRead():
-    flag = 0
-    while (flag == 0):
-        flag = int(ser.read().decode('utf-8'))
+    flag = '0'
+    while (flag == '0'):
+        flag = ser.read()
         print(flag)
 
 
 def sendTraj(traj):
-    for i in range(len((traj.q))):
+    for i in range(2, len((traj.q))-1):
         tk.robot.q = traj.q[i]
         traj.q[i][1] = traj.q[i][1] * -1
-        tk.env.step()
+        # tk.env.step()
         serialSend(traj.q[i], traj.qd[i])
         serialRead()
     ser.write(bytes("101a", 'utf-8'))
     serialRead()
-    # serialRead()
     # print((len((traj.q))-10) * 2 + 10)
     # for i in range(len((traj.q))//10 * 20 + len((traj.q))%10):
     #     serialRead()
-    # serialRead()
+    serialRead()
