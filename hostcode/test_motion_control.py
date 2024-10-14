@@ -1,18 +1,24 @@
-import taking as tk
-import serialPort as sp
+import traj_planning as tk
+import serial_port as sp
 import time
 import numpy as np
 
 sp.serialBegin(port = 5,baytrate = 921600)
 
-traj = tk.trajFromCurToGiven(tk.robot.qr)
+traj = tk.jtrajFromCurToGiven(tk.robot.qr)
 sp.sendTraj(traj)
 
-traj = tk.trajFromCurToGiven(tk.SolFinder([0, 0.0, 0.15], np.eye(3), q =  tk.robot.q))
+traj = tk.jtrajFromCurToGiven(tk.SolFinder([0, 0.0, 0.15], np.eye(3), q =  tk.robot.q))
 sp.sendTraj(traj)
 
-traj = tk.trajFromCurToGiven(tk.SolFinder([0, 0, -0.05], np.eye(3), q =  tk.robot.q))
+traj = tk.jtrajFromCurToGiven(tk.SolFinder([0.0, -0.05, 0.0], np.eye(3), q =  tk.robot.q))
 sp.sendTraj(traj)
+
+traj = tk.jtrajFromCurToGiven(tk.robot.qz)
+sp.sendTraj(traj)
+
+# traj = tk.jtrajFromCurToGiven(tk.SolFinder([0, 0, -0.05], np.eye(3), q =  tk.robot.q))
+# sp.sendTraj(traj)
 
 # traj = tk.trajFromCurToGiven(tk.SolFinder([0, 0, -0.05], np.eye(3), q =  tk.robot.q))
 # sp.sendTraj(traj)
@@ -28,11 +34,11 @@ sp.sendTraj(traj)
 
 
 # deg = [0.0, 0.0, 0.0, 0.0, 0.0, 0.0]
-# speed = [0.4] * 6
+# speed = [5.0] * 6
 
-# for i in range(50):
+# for i in range(20):
 #     deg[1]-=0.00
-#     deg[2]-=0.002
+#     deg[2]+=0.01
 #     deg[4]+=0.00
 
 #     sp.serialSend(deg, speed)

@@ -181,18 +181,15 @@ void OutputData()
 {
   if (executive_flag && !isReadyAnnounced && !stepper1.tick() && !stepper2.tick() && !stepper3.tick() && !stepper4.tick() && !stepper5.tick() && !stepper6.tick())
   {
-    digitalWrite(LED_BUILTIN, HIGH);  
     isReadyAnnounced = true;
     if (package_executive_index == package_number)
     {                      
-      digitalWrite(LED_BUILTIN, LOW);    
       Serial.print(3);
       executive_flag = false;
       package_executive_index = 0;
     }
     else
     {
-
       package_executive_index += 1;
       isReadyAnnounced = false;
     }

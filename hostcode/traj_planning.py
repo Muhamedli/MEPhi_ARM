@@ -8,9 +8,9 @@ hight = 0.308
 robot = rtb.models.MEPhI_ARM()
 robot.q = robot.qz
 
-# env = swift.Swift()
-# env.launch(realtime=True)
-# env.add(robot)
+env = swift.Swift()
+env.launch(realtime=True)
+env.add(robot)
 
 
 def SolDegrees(tvec, trans_matrix, q=robot.qr, const_orient=True):
@@ -78,6 +78,21 @@ def FromQtoVec(qBeg, qEnd):
     return tvec, trans_mtx
 
 
-def trajFromCurToGiven(qFinish):
-    sol = rtb.tools.trajectory.jtraj(robot.q, qFinish, 40)
+def jtrajFromCurToGiven(qFinish):
+    sol = rtb.tools.trajectory.jtraj(robot.q, qFinish, 50)
     return sol
+
+def ctrajFromCurToGiven(qFinish, time = 4):
+    step = 50
+
+    traj = rtb.tools.trajectory.ctraj(robot.fkine(robot.q), robot.fkine(qFinish), step)
+    cartesian_sol = robot.ikine_LM(traj)
+    
+    
+    velocity_array = np.ndarray(shape=(step - 1, 6))  # Создание массива для хранения скоростей в осях
+    for i in range(step - 1):  # вычисление обобщенных скоростей в осях для каждой точки траектории
+        for k in range(6):
+            velocity_array[i][k] = (cartesian_sol.q[i + 1][k] - cartesian_sol.q[i][k]) / float(time/step)
+
+    traj = rtb.tools.trajectory.Trajectory(name = "ctraj", s = cartesian_sol.q[1:], sd = velocity_array, t = time)
+    return traj

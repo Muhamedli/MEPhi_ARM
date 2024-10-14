@@ -1,5 +1,5 @@
-import taking as tk
-import serialPort as sp
+import traj_planning as tk
+import serial_port as sp
 import time
 
 sp.serialBegin(baytrate = 921600)
