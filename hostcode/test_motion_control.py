@@ -8,14 +8,14 @@ sp.serialBegin(port = 5,baytrate = 921600)
 traj = tk.jtrajFromCurToGiven(tk.robot.qr)
 sp.sendTraj(traj)
 
-traj = tk.jtrajFromCurToGiven(tk.SolFinder([0, 0.0, 0.15], np.eye(3), q =  tk.robot.q))
+traj = tk.jtrajFromCurToGiven(tk.SolFinder([0.0, 0.0, 0.15], np.eye(3), q =  tk.robot.q))
 sp.sendTraj(traj)
 
-traj = tk.jtrajFromCurToGiven(tk.SolFinder([0.0, -0.05, 0.0], np.eye(3), q =  tk.robot.q))
-sp.sendTraj(traj)
-
-traj = tk.jtrajFromCurToGiven(tk.robot.qz)
-sp.sendTraj(traj)
+# traj = tk.jtrajFromCurToGiven(tk.SolFinder([0.0, -0.05, 0.0], np.eye(3), q =  tk.robot.q))
+# sp.sendTraj(traj)
+#
+# traj = tk.jtrajFromCurToGiven(tk.robot.qz)
+# sp.sendTraj(traj)
 
 # traj = tk.jtrajFromCurToGiven(tk.SolFinder([0, 0, -0.05], np.eye(3), q =  tk.robot.q))
 # sp.sendTraj(traj)
