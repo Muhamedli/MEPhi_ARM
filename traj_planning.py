@@ -15,7 +15,7 @@ env.add(robot)
 
 def SolDegrees(tvec, trans_matrix, q=robot.qr, const_orient=True):
     sol = SolFinder(tvec, trans_matrix, const_orient, q)
-    # robot.q = sol
+    robot.q = sol
     env.step()
     sol = list(map(lambda x: round((x / np.pi * 180), ndigits=1), sol))
     return sol

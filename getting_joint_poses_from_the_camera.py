@@ -3,7 +3,7 @@ from traj_planning import *
 import json
 import keyboard
 
-f = open("Aruco_and_calibration/charuco_board_calibration.json")
+f = open("charuco_board_calibration.json")
 data = json.load(f)
 
 imageWidth = 1920
@@ -83,7 +83,6 @@ while True:
 
             if (flag):
                 angle_joint = SolDegrees(tvec[0][0], trans_matrix[0], const_orient=True)
-                robot.q = angle_joint
                 travel_time = 5  # время прохода траектории
                 steps = 50  # Число точек разбиения (кол-во пакетов углов в traj_for_AI.q)
                 time_step = travel_time / steps
