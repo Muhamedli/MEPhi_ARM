@@ -116,8 +116,8 @@ void Read(const Text &COM_port, long pos[], long speed[], bool withServo)
 {
   for (int i = 0; i < 6; i++)
   {
-    pos[i] = (int) (COM_port.getSub(i, '/').toFloat() / 360.0) * steps_per_round[i];
-    speed[i] = (int)(COM_port.getSub(i + 6, '/').toFloat() / 360.0) * steps_per_round[i];
+    pos[i] = (int) (COM_port.getSub(i, '/').toFloat() / 360.0 * steps_per_round[i]);
+    speed[i] = (int)(COM_port.getSub(i + 6, '/').toFloat() / 360.0 * steps_per_round[i]);
   }
   if (withServo)
   {
