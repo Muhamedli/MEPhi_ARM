@@ -32,18 +32,19 @@ def serialSend(deg, speed):
     print(bytes(output_text,'utf-8'))
 
 
-def serialRead():
+def serialRead(print_option = True):
     flag = '0'
     while (flag == '0'):
         flag = ser.read()
-        print(flag)
+        if(print_option):
+            print(flag)
 
 
 def sendTraj(traj):
     for i in range(1, len((traj.q))-1):
         print(i, end=' ')
         serialSend(traj.q[i], traj.qd[i])
-        serialRead()
+        serialRead(False)
     ser.write(bytes("101a", 'utf-8'))
     serialRead()
     for i in range(len((traj.q))-3):

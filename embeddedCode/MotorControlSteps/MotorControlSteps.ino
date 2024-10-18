@@ -1,30 +1,30 @@
 #include <Arduino.h>
-#include <GyverStepper2.h>
+#include <GyverStepper.h>
 #include <ESP32Servo.h>
 #include <StringUtils.h>
 
 #define traj_array_len 50
+#define LED_BUILTIN 2
 
-GStepper2<STEPPER2WIRE> stepper1(200 * 16 * 11, 18, 5);
-GStepper2<STEPPER2WIRE> stepper2(200 * 16 * 12, 17, 16);
-GStepper2<STEPPER2WIRE> stepper3(200 * 16 * 15, 27, 14);
-GStepper2<STEPPER2WIRE> stepper4(200 * 16 * 9, 2, 15);
-GStepper2<STEPPER2WIRE> stepper5(200 * 16 * 6, 26, 25);
-GStepper2<STEPPER2WIRE> stepper6(200 * 16 * 50, 33, 32);
-
-long steps_per_round[6] = {200 * 16 * 11, 200 * 16 * 12, 200 * 16 * 15, 200 * 16 * 9, 200 * 16 * 6, 200 * 16 * 50};
+//Дробление шага равно 4
+GStepper<STEPPER2WIRE> stepper1(200 * 4 * 11, 18, 5);
+GStepper<STEPPER2WIRE> stepper2(200 * 4 * 12, 17, 16);
+GStepper<STEPPER2WIRE> stepper3(200 * 4 * 15, 27, 14);
+GStepper<STEPPER2WIRE> stepper4(200 * 4 * 9, 2, 15);
+GStepper<STEPPER2WIRE> stepper5(200 * 4 * 6, 26, 25);
+GStepper<STEPPER2WIRE> stepper6(200 * 4 * 50, 33, 32);
 
 Servo myservo;
 
-int accel_stepper1 = 0;
-int accel_stepper2 = 0;
-int accel_stepper3 = 0;
-int accel_stepper4 = 0;
-int accel_stepper5 = 0;
-int accel_stepper6 = 0;
+float accel_stepper1 = 0;
+float accel_stepper2 = 0;
+float accel_stepper3 = 0;
+float accel_stepper4 = 0;
+float accel_stepper5 = 0;
+float accel_stepper6 = 0;
 
-long pos[7] = {0, 0, 0, 0, 0, 0, 0};
-long speedMass[6] = {15, 10, 15, 25, 15, 20};
+float pos[7] = {0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0};
+float speedMass[6] = {15.0, 10.0, 15.0, 25.0, 15.0, 20.0};
 
 bool isReadyAnnounced = false;
 bool executive_flag = false;
@@ -32,29 +32,36 @@ int package_number = traj_array_len;
 int package_read_index = 0;
 int package_executive_index = 0;
 
-long traj_speed[traj_array_len][6];
-long traj_pos[traj_array_len][7];
+float traj_speed[traj_array_len][6];
+float traj_pos[traj_array_len][7];
 
 
 void setup()
 {
+  pinMode(LED_BUILTIN, OUTPUT);
   
-  stepper1.setAcceleration(accel_stepper1);
+  stepper1.setRunMode(FOLLOW_POS);
+  stepper1.setAccelerationDeg(accel_stepper1);
   // stepper1.autoPower(true);
 
-  stepper1.setAcceleration(accel_stepper2);
+  stepper2.setRunMode(FOLLOW_POS);
+  stepper2.setAccelerationDeg(accel_stepper2);
   // stepper2.autoPower(true);
 
-  stepper1.setAcceleration(accel_stepper3);
+  stepper3.setRunMode(FOLLOW_POS);
+  stepper3.setAccelerationDeg(accel_stepper3);
   // stepper3.autoPower(true);
 
-  stepper1.setAcceleration(accel_stepper4);
+  stepper4.setRunMode(FOLLOW_POS);
+  stepper4.setAccelerationDeg(accel_stepper4);
   // stepper4.autoPower(true);
 
-  stepper1.setAcceleration(accel_stepper5);
+  stepper5.setRunMode(FOLLOW_POS);
+  stepper5.setAccelerationDeg(accel_stepper5);
   // stepper5.autoPower(true);
 
-  stepper1.setAcceleration(accel_stepper6);
+  stepper6.setRunMode(FOLLOW_POS);
+  stepper6.setAccelerationDeg(accel_stepper6);
   // stepper6.autoPower(true);
 
   setSpeed(speedMass);
@@ -67,14 +74,14 @@ void setup()
   }
 }
 
-void setSpeed(long speedMass[6])
+void setSpeed(float speedMass[6])
 {
-  stepper1.setMaxSpeed(speedMass[0]); // в градусах/сек
-  stepper2.setMaxSpeed(speedMass[1]); // в градусах/сек
-  stepper3.setMaxSpeed(speedMass[2]); // в градусах/сек
-  stepper4.setMaxSpeed(speedMass[3]); // в градусах/сек
-  stepper5.setMaxSpeed(speedMass[4]); // в градусах/сек
-  stepper6.setMaxSpeed(speedMass[5]); // в градусах/сек
+  stepper1.setMaxSpeedDeg(speedMass[0]); // в градусах/сек
+  stepper2.setMaxSpeedDeg(speedMass[1]); // в градусах/сек
+  stepper3.setMaxSpeedDeg(speedMass[2]); // в градусах/сек
+  stepper4.setMaxSpeedDeg(speedMass[3]); // в градусах/сек
+  stepper5.setMaxSpeedDeg(speedMass[4]); // в градусах/сек
+  stepper6.setMaxSpeedDeg(speedMass[5]); // в градусах/сек
 }
 
 void Go()
@@ -84,27 +91,27 @@ void Go()
     setSpeed(traj_speed[package_executive_index]);
     if (!stepper1.tick())
     {
-      stepper1.setTarget(traj_pos[package_executive_index][0], ABSOLUTE);
+      stepper1.setTargetDeg(traj_pos[package_executive_index][0], ABSOLUTE);
     }
     if (!stepper2.tick())
     {
-      stepper2.setTarget(traj_pos[package_executive_index][1], ABSOLUTE);
+      stepper2.setTargetDeg(traj_pos[package_executive_index][1], ABSOLUTE);
     }
     if (!stepper3.tick())
     {
-      stepper3.setTarget(traj_pos[package_executive_index][2], ABSOLUTE);
+      stepper3.setTargetDeg(traj_pos[package_executive_index][2], ABSOLUTE);
     }
     if (!stepper4.tick())
     {
-      stepper4.setTarget(traj_pos[package_executive_index][3], ABSOLUTE);
+      stepper4.setTargetDeg(traj_pos[package_executive_index][3], ABSOLUTE);
     }
     if (!stepper5.tick())
     {
-      stepper5.setTarget(traj_pos[package_executive_index][4], ABSOLUTE);
+      stepper5.setTargetDeg(traj_pos[package_executive_index][4], ABSOLUTE);
     }
     if (!stepper6.tick())
     {
-      stepper6.setTarget(traj_pos[package_executive_index][5], ABSOLUTE);
+      stepper6.setTargetDeg(traj_pos[package_executive_index][5], ABSOLUTE);
     }
     myservo.write(traj_pos[package_executive_index][6]);
   }
@@ -112,16 +119,16 @@ void Go()
 // строка типа: 10.0/20.0/ ... 15.0/15.0/ ... 10.0/10.0/ ... 10.0
 // сперва 6 углов для шаговиков, потом 6 скоростей для шаговиков,
 // последним указывается угол для серво
-void Read(const Text &COM_port, long pos[], long speed[], bool withServo)
+void Read(const Text &COM_port, float pos[], float speed[], bool withServo)
 {
   for (int i = 0; i < 6; i++)
   {
-    pos[i] = (int) (COM_port.getSub(i, '/').toFloat() / 360.0 * steps_per_round[i]);
-    speed[i] = (int)(COM_port.getSub(i + 6, '/').toFloat() / 360.0 * steps_per_round[i]);
+    pos[i] = COM_port.getSub(i, '/').toFloat();
+    speed[i] = COM_port.getSub(i + 6, '/').toFloat();
   }
   if (withServo)
   {
-    pos[6] = (int) (COM_port.getSub(12, '/').toFloat() / 180.0);
+    pos[6] = COM_port.getSub(12, '/').toFloat();
   }
 }
 
@@ -178,7 +185,6 @@ void OutputData()
     isReadyAnnounced = true;
     if (package_executive_index == package_number)
     {                      
-          
       Serial.print(3);
       executive_flag = false;
       package_executive_index = 0;
