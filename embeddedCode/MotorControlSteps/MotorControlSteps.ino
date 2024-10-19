@@ -39,27 +39,27 @@ long traj_pos[traj_array_len][7];
 void setup()
 {
   
-  stepper1.setAcceleration(accel_stepper1);
+  stepper1.setAcceleration(0);
   // stepper1.autoPower(true);
 
-  stepper1.setAcceleration(accel_stepper2);
+  stepper2.setAcceleration(0);
   // stepper2.autoPower(true);
 
-  stepper1.setAcceleration(accel_stepper3);
+  stepper3.setAcceleration(0);
   // stepper3.autoPower(true);
 
-  stepper1.setAcceleration(accel_stepper4);
+  stepper4.setAcceleration(0);
   // stepper4.autoPower(true);
 
-  stepper1.setAcceleration(accel_stepper5);
+  stepper5.setAcceleration(0);
   // stepper5.autoPower(true);
 
-  stepper1.setAcceleration(accel_stepper6);
+  stepper6.setAcceleration(0);
   // stepper6.autoPower(true);
 
   setSpeed(speedMass);
 
-  Serial.begin(921600);
+  Serial.begin(115200);
 
   if (!myservo.attached())
   {
@@ -121,7 +121,7 @@ void Read(const Text &COM_port, long pos[], long speed[], bool withServo)
   }
   if (withServo)
   {
-    pos[6] = (int) (COM_port.getSub(12, '/').toFloat() / 180.0);
+    pos[6] = (int) (COM_port.getSub(12, '/').toFloat());
   }
 }
 

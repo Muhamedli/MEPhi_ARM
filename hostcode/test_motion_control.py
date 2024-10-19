@@ -3,25 +3,30 @@ import serial_port as sp
 import time
 import numpy as np
 
-sp.serialBegin(port = 5,baytrate = 921600)
+sp.serialBegin(port = 5,baytrate = 115200)
 
-traj = tk.jtrajFromCurToGiven(tk.robot.qr)
+traj = tk.jtrajFromCurToGiven(tk.robot.qr)Working with the control system hang-upWorking with the control system hang-up
 sp.sendTraj(traj)
 
 traj = tk.jtrajFromCurToGiven(tk.SolFinder([0.0, 0.0, 0.15], np.eye(3), q =  tk.robot.q))
 sp.sendTraj(traj)
 
-# traj = tk.jtrajFromCurToGiven(tk.SolFinder([0.0, -0.05, 0.0], np.eye(3), q =  tk.robot.q))
-# sp.sendTraj(traj)
-#
-# traj = tk.jtrajFromCurToGiven(tk.robot.qz)
-# sp.sendTraj(traj)
+traj = tk.jtrajFromCurToGiven(tk.SolFinder([0.05, 0.05, 0.0], np.eye(3), q =  tk.robot.q))
+sp.sendTraj(traj)
 
-# traj = tk.jtrajFromCurToGiven(tk.SolFinder([0, 0, -0.05], np.eye(3), q =  tk.robot.q))
-# sp.sendTraj(traj)
+traj = tk.jtrajFromCurToGiven(tk.SolFinder([0, -0.1, 0.0], np.eye(3), q =  tk.robot.q))
+sp.sendTraj(traj)
 
-# traj = tk.trajFromCurToGiven(tk.SolFinder([0, 0, -0.05], np.eye(3), q =  tk.robot.q))
-# sp.sendTraj(traj)
+traj = tk.jtrajFromCurToGiven(tk.SolFinder([-0.1, 0, 0.0], np.eye(3), q =  tk.robot.q))
+sp.sendTraj(traj)
+
+traj = tk.jtrajFromCurToGiven(tk.SolFinder([0, 0.1, 0.0], np.eye(3), q =  tk.robot.q))
+sp.sendTraj(traj)
+
+
+traj = tk.jtrajFromCurToGiven(tk.robot.qz)
+sp.sendTraj(traj)
+
 
 # for i in range(len(traj.q)-1):
 #     times = [0, 0, 0, 0, 0, 0]

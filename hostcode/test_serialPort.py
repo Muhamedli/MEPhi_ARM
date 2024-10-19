@@ -2,7 +2,7 @@ import traj_planning as tk
 import serial_port as sp
 import time
 
-sp.serialBegin(baytrate = 921600)
+sp.serialBegin(baytrate = 115200)
 
 # traj = tk.trajFromCurToGiven(tk.robot.qr)
 # sp.sendTraj(traj)

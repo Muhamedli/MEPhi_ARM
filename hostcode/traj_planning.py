@@ -78,17 +78,17 @@ def FromQtoVec(qBeg, qEnd):
     return tvec, trans_mtx
 
 
-def jtrajFromCurToGiven(qFinish, travel_time = 4):
-    step = 50
+def jtrajFromCurToGiven(qFinish, travel_time = 3):
+    global step_time
 
-    time_vec = np.arange(0, travel_time, travel_time/step)
+    step = 50
+    step_time = travel_time / step
+    time_vec = np.arange(0, travel_time, step_time)
     sol = rtb.tools.trajectory.jtraj(robot.q, qFinish, time_vec)
     return sol
 
 def ctrajFromCurToGiven(qFinish, time = 4):
     step = 50
-
-
     traj = rtb.tools.trajectory.ctraj(robot.fkine(robot.q), robot.fkine(qFinish), step)
     cartesian_sol = robot.ikine_LM(traj)
     

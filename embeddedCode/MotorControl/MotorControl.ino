@@ -63,7 +63,7 @@ void setup()
 
   setSpeed(speedMass);
 
-  Serial.begin(921600);
+  Serial.begin(115200);
 
   if (!myservo.attached())
   {
@@ -188,6 +188,7 @@ void OutputData()
     }
     else
     {
+      Serial.print(package_executive_index%10);
       package_executive_index += 1;
       isReadyAnnounced = false;
     }
