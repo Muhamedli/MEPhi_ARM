@@ -5,7 +5,7 @@ import numpy as np
 
 sp.serialBegin(port = 5,baytrate = 115200)
 
-traj = tk.jtrajFromCurToGiven(tk.robot.qr)Working with the control system hang-upWorking with the control system hang-up
+traj = tk.jtrajFromCurToGiven(tk.robot.qr)
 sp.sendTraj(traj)
 
 traj = tk.jtrajFromCurToGiven(tk.SolFinder([0.0, 0.0, 0.15], np.eye(3), q =  tk.robot.q))
