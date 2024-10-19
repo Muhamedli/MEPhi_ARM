@@ -15,7 +15,7 @@ env.add(robot)
 
 def SolDegrees(tvec, trans_matrix, q=robot.qr, const_orient=True):
     sol = SolFinder(tvec, trans_matrix, const_orient, q)
-    # robot.q = sol
+    robot.q = sol
     env.step()
     sol = list(map(lambda x: round((x / np.pi * 180), ndigits=1), sol))
     return sol
@@ -78,12 +78,16 @@ def FromQtoVec(qBeg, qEnd):
     return tvec, trans_mtx
 
 
-def jtrajFromCurToGiven(qFinish):
-    sol = rtb.tools.trajectory.jtraj(robot.q, qFinish, 50)
+def jtrajFromCurToGiven(qFinish, travel_time = 4):
+    step = 50
+
+    time_vec = np.arange(0, travel_time, travel_time/step)
+    sol = rtb.tools.trajectory.jtraj(robot.q, qFinish, time_vec)
     return sol
 
 def ctrajFromCurToGiven(qFinish, time = 4):
     step = 50
+
 
     traj = rtb.tools.trajectory.ctraj(robot.fkine(robot.q), robot.fkine(qFinish), step)
     cartesian_sol = robot.ikine_LM(traj)

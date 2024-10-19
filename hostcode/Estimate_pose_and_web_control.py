@@ -83,7 +83,6 @@ while True:
 
             if (flag):
                 angle_joint = SolDegrees(tvec[0][0], trans_matrix[0], const_orient=True)
-                robot.q = angle_joint
 
             text = ""
             for i in range(len(angle_joint)):
