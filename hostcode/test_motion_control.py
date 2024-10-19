@@ -5,20 +5,20 @@ import numpy as np
 
 sp.serialBegin(port = 5,baytrate = 921600)
 
-traj = tk.jtrajFromCurToGiven(tk.robot.qr, travel_time = 5)
+traj = tk.jtrajFromCurToGiven(tk.robot.qr)
 sp.sendTraj(traj)
 
-traj = tk.jtrajFromCurToGiven(tk.SolFinder([0.00, 0.0, 0.15], np.eye(3), q =  tk.robot.q), travel_time = 3)
+traj = tk.jtrajFromCurToGiven(tk.SolFinder([0.0, 0.0, 0.15], np.eye(3), q =  tk.robot.q))
 sp.sendTraj(traj)
 
-traj = tk.jtrajFromCurToGiven(tk.SolFinder([-0.05, -0.05, 0.0], np.eye(3), q =  tk.robot.q), travel_time = 3)
-sp.sendTraj(traj)
+# traj = tk.jtrajFromCurToGiven(tk.SolFinder([0.0, -0.05, 0.0], np.eye(3), q =  tk.robot.q))
+# sp.sendTraj(traj)
+#
+# traj = tk.jtrajFromCurToGiven(tk.robot.qz)
+# sp.sendTraj(traj)
 
-traj = tk.jtrajFromCurToGiven(tk.SolFinder([0.10, 0.0, 0.0], np.eye(3), q =  tk.robot.q), travel_time = 3)
-sp.sendTraj(traj)
-
-traj = tk.jtrajFromCurToGiven(tk.SolFinder([0, 0.1, 0.0], np.eye(3), q =  tk.robot.q), travel_time = 3)
-sp.sendTraj(traj)
+# traj = tk.jtrajFromCurToGiven(tk.SolFinder([0, 0, -0.05], np.eye(3), q =  tk.robot.q))
+# sp.sendTraj(traj)
 
 # traj = tk.trajFromCurToGiven(tk.SolFinder([0, 0, -0.05], np.eye(3), q =  tk.robot.q))
 # sp.sendTraj(traj)
