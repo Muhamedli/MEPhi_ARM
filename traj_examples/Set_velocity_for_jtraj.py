@@ -22,16 +22,12 @@ goal_ax = sg.Axes(0.1, pose=Tep1)
 env.add(goal_ax)
 
 travel_time = 5
-steps = 50
-time_step = travel_time / steps
-time_vec = np.arange(0, travel_time, time_step)
-traj = rtb.tools.trajectory.jtraj(robot.q, sol[0], time_vec)
+step = 50
+step_time = travel_time / step
+time_vec = np.arange(0, travel_time, step_time)
+traj = rtb.tools.trajectory.jtraj(robot.q, sol[0], time_vec, qd0=[0.005, 0.005, 0.005, 0.005, 0.005, 0.005],
+                                  qd1=[0.005, 0.005, 0.005, 0.005, 0.005, 0.005])
 # print(traj.q)
-
-# движение робота
-for i in traj.q:
-    robot.q = i
-    env.step(time_step)
 
 # графики скоростей в осях
 graphics = traj.qd.transpose()
@@ -40,3 +36,8 @@ for i in range(6):
         plt.plot(graphics[i] * 180 / np.pi, label=f"{i + 1}")
 plt.legend()
 plt.show()
+
+# движение робота
+for i in traj.q:
+    robot.q = i
+    env.step(step_time)

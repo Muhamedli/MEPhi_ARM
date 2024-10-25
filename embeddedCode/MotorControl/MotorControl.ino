@@ -3,16 +3,15 @@
 #include <ESP32Servo.h>
 #include <StringUtils.h>
 
-#define traj_array_len 50
-#define LED_BUILTIN 2
+#define traj_array_len 300
 
-#Дробление шага равно 4
-GStepper<STEPPER2WIRE> stepper1(200 * 4 * 11, 18, 5);
-GStepper<STEPPER2WIRE> stepper2(200 * 4 * 12, 17, 16);
-GStepper<STEPPER2WIRE> stepper3(200 * 4 * 15, 27, 14);
-GStepper<STEPPER2WIRE> stepper4(200 * 4 * 9, 2, 15);
-GStepper<STEPPER2WIRE> stepper5(200 * 4 * 6, 26, 25);
-GStepper<STEPPER2WIRE> stepper6(200 * 4 * 50, 33, 32);
+//Дробление шага равно 16
+GStepper<STEPPER2WIRE> stepper1(200 * 16 * 11, 18, 5);
+GStepper<STEPPER2WIRE> stepper2(200 * 16 * 12, 17, 16);
+GStepper<STEPPER2WIRE> stepper3(200 * 16 * 15, 27, 14);
+GStepper<STEPPER2WIRE> stepper4(200 * 16 * 9, 2, 15);
+GStepper<STEPPER2WIRE> stepper5(200 * 16 * 6, 26, 25);
+GStepper<STEPPER2WIRE> stepper6(200 * 16 * 50, 33, 32);
 
 Servo myservo;
 
@@ -37,9 +36,7 @@ float traj_pos[traj_array_len][7];
 
 
 void setup()
-{
-  pinMode(LED_BUILTIN, OUTPUT);
-  
+{  
   stepper1.setRunMode(FOLLOW_POS);
   stepper1.setAccelerationDeg(accel_stepper1);
   // stepper1.autoPower(true);
@@ -66,7 +63,7 @@ void setup()
 
   setSpeed(speedMass);
 
-  Serial.begin(921600);
+  Serial.begin(115200);
 
   if (!myservo.attached())
   {
@@ -191,6 +188,7 @@ void OutputData()
     }
     else
     {
+      Serial.print(package_executive_index%10);
       package_executive_index += 1;
       isReadyAnnounced = false;
     }

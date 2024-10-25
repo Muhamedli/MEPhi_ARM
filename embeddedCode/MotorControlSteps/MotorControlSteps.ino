@@ -3,16 +3,15 @@
 #include <ESP32Servo.h>
 #include <StringUtils.h>
 
-#define traj_array_len 50
-#define LED_BUILTIN 2
+#define traj_array_len 300
 
-//Дробление шага равно 4
-GStepper<STEPPER2WIRE> stepper1(200 * 4 * 11, 18, 5);
-GStepper<STEPPER2WIRE> stepper2(200 * 4 * 12, 17, 16);
-GStepper<STEPPER2WIRE> stepper3(200 * 4 * 15, 27, 14);
-GStepper<STEPPER2WIRE> stepper4(200 * 4 * 9, 2, 15);
-GStepper<STEPPER2WIRE> stepper5(200 * 4 * 6, 26, 25);
-GStepper<STEPPER2WIRE> stepper6(200 * 4 * 50, 33, 32);
+//Дробление шага равно 16
+GStepper<STEPPER2WIRE> stepper1(200 * 16 * 11, 18, 5);
+GStepper<STEPPER2WIRE> stepper2(200 * 16 * 12, 17, 16);
+GStepper<STEPPER2WIRE> stepper3(200 * 16 * 15, 27, 14);
+GStepper<STEPPER2WIRE> stepper4(200 * 16 * 9, 2, 15);
+GStepper<STEPPER2WIRE> stepper5(200 * 16 * 6, 26, 25);
+GStepper<STEPPER2WIRE> stepper6(200 * 16 * 50, 33, 32);
 
 Servo myservo;
 
@@ -23,6 +22,8 @@ float accel_stepper4 = 0;
 float accel_stepper5 = 0;
 float accel_stepper6 = 0;
 
+int dir[6] = {1, 1, 1, 1, 1, 1};
+
 float pos[7] = {0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0};
 float speedMass[6] = {15.0, 10.0, 15.0, 25.0, 15.0, 20.0};
 
@@ -30,16 +31,20 @@ bool isReadyAnnounced = false;
 bool executive_flag = false;
 int package_number = traj_array_len;
 int package_read_index = 0;
-int package_executive_index = 0;
+int package_executive_index[6] = {0, 0, 0, 0, 0, 0};
 
-float traj_speed[traj_array_len][6];
+double traj_speed[traj_array_len][6];
 float traj_pos[traj_array_len][7];
+
+void zeroArray(int  ptr[6]){
+  for(int i = 0; i<6; i++){
+    ptr[i] = 0;
+  }
+}
 
 
 void setup()
 {
-  pinMode(LED_BUILTIN, OUTPUT);
-  
   stepper1.setRunMode(FOLLOW_POS);
   stepper1.setAccelerationDeg(accel_stepper1);
   // stepper1.autoPower(true);
@@ -64,9 +69,9 @@ void setup()
   stepper6.setAccelerationDeg(accel_stepper6);
   // stepper6.autoPower(true);
 
-  setSpeed(speedMass);
+  // pinMode(2, OUTPUT);
 
-  Serial.begin(921600);
+  Serial.begin(115200);
 
   if (!myservo.attached())
   {
@@ -74,52 +79,52 @@ void setup()
   }
 }
 
-void setSpeed(float speedMass[6])
+void setSpeed()
 {
-  stepper1.setMaxSpeedDeg(speedMass[0]); // в градусах/сек
-  stepper2.setMaxSpeedDeg(speedMass[1]); // в градусах/сек
-  stepper3.setMaxSpeedDeg(speedMass[2]); // в градусах/сек
-  stepper4.setMaxSpeedDeg(speedMass[3]); // в градусах/сек
-  stepper5.setMaxSpeedDeg(speedMass[4]); // в градусах/сек
-  stepper6.setMaxSpeedDeg(speedMass[5]); // в градусах/сек
+  stepper1.setMaxSpeedDeg(traj_speed[package_executive_index[0]][0]); // в градусах/сек
+  stepper2.setMaxSpeedDeg(traj_speed[package_executive_index[1]][1]); // в градусах/сек
+  stepper3.setMaxSpeedDeg(traj_speed[package_executive_index[2]][2]); // в градусах/сек
+  stepper4.setMaxSpeedDeg(traj_speed[package_executive_index[3]][3]); // в градусах/сек
+  stepper5.setMaxSpeedDeg(traj_speed[package_executive_index[4]][4]); // в градусах/сек
+  stepper6.setMaxSpeedDeg(traj_speed[package_executive_index[5]][5]); // в градусах/сек
 }
 
 void Go()
 {
   if (executive_flag)
   {
-    setSpeed(traj_speed[package_executive_index]);
+    setSpeed();
     if (!stepper1.tick())
     {
-      stepper1.setTargetDeg(traj_pos[package_executive_index][0], ABSOLUTE);
+      stepper1.setTargetDeg(traj_pos[package_number][0], ABSOLUTE);
     }
     if (!stepper2.tick())
     {
-      stepper2.setTargetDeg(traj_pos[package_executive_index][1], ABSOLUTE);
+      stepper2.setTargetDeg(traj_pos[package_number][1], ABSOLUTE);
     }
     if (!stepper3.tick())
     {
-      stepper3.setTargetDeg(traj_pos[package_executive_index][2], ABSOLUTE);
+      stepper3.setTargetDeg(traj_pos[package_number][2], ABSOLUTE);
     }
     if (!stepper4.tick())
     {
-      stepper4.setTargetDeg(traj_pos[package_executive_index][3], ABSOLUTE);
+      stepper4.setTargetDeg(traj_pos[package_number][3], ABSOLUTE);
     }
     if (!stepper5.tick())
     {
-      stepper5.setTargetDeg(traj_pos[package_executive_index][4], ABSOLUTE);
+      stepper5.setTargetDeg(traj_pos[package_number][4], ABSOLUTE);
     }
     if (!stepper6.tick())
     {
-      stepper6.setTargetDeg(traj_pos[package_executive_index][5], ABSOLUTE);
+      stepper6.setTargetDeg(traj_pos[package_number][5], ABSOLUTE);
     }
-    myservo.write(traj_pos[package_executive_index][6]);
+    // myservo.write(traj_pos[package_executive_index[6]][6]);
   }
 }
 // строка типа: 10.0/20.0/ ... 15.0/15.0/ ... 10.0/10.0/ ... 10.0
 // сперва 6 углов для шаговиков, потом 6 скоростей для шаговиков,
 // последним указывается угол для серво
-void Read(const Text &COM_port, float pos[], float speed[], bool withServo)
+void Read(const Text &COM_port, float pos[], double speed[], bool withServo)
 {
   for (int i = 0; i < 6; i++)
   {
@@ -163,11 +168,61 @@ void InputData()
     else if (COM_port == "101")
     {
       package_number = max(package_read_index - 1, 0);
-      package_read_index = 0;
-      package_executive_index = 0;
-      isReadyAnnounced = false;
-      executive_flag = true;
+      if(traj_pos[package_number][0] < stepper1.getCurrentDeg()){
+        dir[0] = -1;
+      }
+      else{
+        dir[0] = 1;
+      }
+      
+      if(traj_pos[package_number][1] < stepper2.getCurrentDeg()){
+        dir[1] = -1;
+      }
+      else{
+        dir[1] = 1;
+      }      
+      
+      if(traj_pos[package_number][2] < stepper3.getCurrentDeg()){
+        dir[2] = -1;
+      }
+      else{
+        dir[2] = 1;
+      }
 
+      if(traj_pos[package_number][3] < stepper4.getCurrentDeg()){
+        dir[3] = -1;
+      }
+      else{
+        dir[3] = 1;
+      }
+
+      if(traj_pos[package_number][4] < stepper5.getCurrentDeg()){
+        dir[4] = -1;
+        // digitalWrite(2, HIGH);
+      }
+      else{
+        dir[4] = 1;
+        // digitalWrite(2, LOW);
+        
+      }
+
+      if(traj_pos[package_number][5] < stepper6.getCurrentDeg()){
+        dir[5] = -1;
+      }
+      else{
+        dir[5] = 1;
+      }
+
+      // Serial.println();
+      // for(int i = 0; i < 6; i++){
+      //   Serial.print(dir[i]);
+      //   Serial.print(" ");
+      // }
+      // Serial.println();
+
+      package_read_index = 0;
+      zeroArray(package_executive_index);
+      executive_flag = true;
       Serial.print(2);
     }
     else
@@ -180,21 +235,36 @@ void InputData()
 }
 void OutputData()
 {
-  if (executive_flag && !isReadyAnnounced && !stepper1.tick() && !stepper2.tick() && !stepper3.tick() && !stepper4.tick() && !stepper5.tick() && !stepper6.tick())
+  if(stepper1.getCurrentDeg() * dir[0] > traj_pos[package_executive_index[0]][0]* dir[0]){
+    package_executive_index[0] += 1;
+  }
+    
+  if(stepper2.getCurrentDeg() * dir[1]> traj_pos[package_executive_index[1]][1]* dir[1]){
+    package_executive_index[1] += 1;
+  }
+    
+  if(stepper3.getCurrentDeg() * dir[2]> traj_pos[package_executive_index[2]][2]* dir[2]){
+    package_executive_index[2] += 1;
+  }
+    
+  if(stepper4.getCurrentDeg() * dir[3]> traj_pos[package_executive_index[3]][3]* dir[3]){
+    package_executive_index[3] += 1;
+  }
+  
+  if(stepper5.getCurrentDeg() * dir[4]> traj_pos[package_executive_index[4]][4]* dir[4]){
+    package_executive_index[4] += 1;
+  }
+    
+  if(stepper6.getCurrentDeg() * dir[5]> traj_pos[package_executive_index[5]][5]* dir[5]){
+    package_executive_index[5] += 1;
+  }
+
+  if (executive_flag && !stepper1.tick() && !stepper2.tick() && !stepper3.tick() && !stepper4.tick() && !stepper5.tick() && !stepper6.tick())
   {
-    isReadyAnnounced = true;
-    if (package_executive_index == package_number)
-    {                      
       Serial.print(3);
       executive_flag = false;
-      package_executive_index = 0;
-    }
-    else
-    {
-      Serial.print(package_executive_index%10);
-      package_executive_index += 1;
-      isReadyAnnounced = false;
-    }
+      zeroArray(package_executive_index);
+
   }
 }
 
@@ -203,4 +273,6 @@ void loop()
   Go();
   OutputData();
   InputData();
+
+  
 }
