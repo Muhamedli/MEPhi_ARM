@@ -1,10 +1,13 @@
 from tkinter.constants import ROUND
 
 import serial
+from numpy.f2py.f90mod_rules import fgetdims2
+
 import traj_planning as tk
 import time
 
-changed_q = [[0]*6, [0]*6]
+changed_q = [[0] * 6, [0] * 6]
+
 
 def serialBegin(port=5, baytrate=115200):
     global ser
@@ -20,11 +23,13 @@ def serialSend(deg, speed):
             deg[i] = tk.robot.q[i]
             changed_q[0][i] = 1
             changed_q[1][i] = tk.robot.q[i]
-            # speed[i] = 0.05
-        elif(changed_q[0][i]):
-            speed[i] = (deg[i]-changed_q[1][i])/tk.step_time
-            # speed[i] = 0.02
-            changed_q[0][i] = 0
+            speed[i] = 0.05
+            # print(100*"-", f"ось {i}   ", speed[i])
+        #
+        # elif (changed_q[0][i]):
+        #     speed[i] = (deg[i] - changed_q[1][i]) / tk.step_time
+        #     # speed[i] = 0.02
+        #     changed_q[0][i] = 0
 
     tk.robot.q = deg
 
@@ -34,28 +39,32 @@ def serialSend(deg, speed):
     for i in [1, 0]:
         dataArray[i] *= -1
 
+    # dataArray[5] *= 0
+
     output_text = ""
     output_text = "/".join(str(i) for i in dataArray)
     ser.write(bytes(output_text, 'utf-8'))
-    print(bytes(output_text,'utf-8'))
+    print(bytes(output_text, 'utf-8'))
 
 
-def serialRead():
+def serialRead(printFlag = True):
     flag = '0'
     while (flag == '0'):
         flag = ser.read()
-        print(flag)
+        if(printFlag):
+            print(flag)
 
 
 def sendTraj(traj):
-    for i in range(1, len((traj.q))-1):
+    traj.q[-2] = traj.q[-1]
+    for i in range(len(traj.q)):
         print(i, end=' ')
         serialSend(traj.q[i], traj.qd[i])
         serialRead()
     ser.write(bytes("101a", 'utf-8'))
     serialRead()
-    for i in range(len((traj.q))-3):
-        serialRead()
-        tk.robot.q = traj.q[i]
-        tk.env.step(tk.step_time)
+    # for i in range(len(traj.q)-1):
+    #     serialRead(False)
+    #     tk.robot.q = traj.q[i]
+    #     tk.env.step(tk.step_time)
     serialRead()

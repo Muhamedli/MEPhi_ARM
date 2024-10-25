@@ -3,7 +3,7 @@
 #include <ESP32Servo.h>
 #include <StringUtils.h>
 
-#define traj_array_len 50
+#define traj_array_len 300
 
 //Дробление шага равно 16
 GStepper<STEPPER2WIRE> stepper1(200 * 16 * 11, 18, 5);
