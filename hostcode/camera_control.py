@@ -1,5 +1,5 @@
 import cv2
-import traj_planning as tk
+# import traj_planning as tk
 import keyboard
 import cv_functions as cvf
 import numpy as np
@@ -10,6 +10,8 @@ fPressed = 0
 cvf.camera_initialisation()
 
 filValTvec = [0, 0, 0]
+
+
 
 
 def RunningAverageAdaptive(newVal, filVal):
@@ -24,29 +26,31 @@ def RunningAverageAdaptive(newVal, filVal):
 
 def imgProdussing():
     cvf.video_capture()
-    try:
-        ids, tvec, rvec = cvf.markers_detection()
 
-        if ids is not None:
+    ids, arucoIdDict, rvecDict, tvecDict = cvf.markers_detection()
+    transMatrixDict = {}
 
-            for j in range(len(ids)):
-                for i in range(len(tvec[0][0])):
-                    filValTvec[i] = RunningAverageAdaptive(tvec[0][0][i], filValTvec[i])
+    if ids is not None:
+        for j in range(len(ids)):
+            index = arucoIdDict[ids[j][0]]
 
-                tvec[0][0] = filValTvec
+            # for i in range(len(tvecArray[j][0][0])):
+            #     filValTvec[i] = RunningAverageAdaptive(tvecArray[index][0][0][i], filValTvec[i])
 
-                tvec[0][0][0] -= 0.005
-                tvec[0][0][1] -= 0.03
-                tvec[0][0][2] -= (0.0562 + 0.034)
+            # tvecDictionary[index][0][0] = filValTvec
 
-                trans_matrix = cv2.Rodrigues(rvec)
+            tvecDict[index][0][0][0] -= 0.005
+            tvecDict[index][0][0][1] -= 0.03
+            tvecDict[index][0][0][2] -= (0.0562 + 0.034)
 
-                trans_matrix[0][1] = [-i for i in np.array(trans_matrix[0])[1]]
-                trans_matrix[0][2] = [-i for i in np.array(trans_matrix[0])[2]]
+            transMatrixDict[index] = cv2.Rodrigues(rvecDict[index])
 
-    except:
-        print("trouble")
+            transMatrixDict[index][0][1] = [-i for i in np.array(transMatrixDict[index][0])[1]]
+            transMatrixDict[index][0][2] = [-i for i in np.array(transMatrixDict[index][0])[2]]
+
 
     cvf.imgDrawing()
 
-    return ids, rvec, tvec
+
+while(1):
+    imgProdussing()

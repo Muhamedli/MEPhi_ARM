@@ -3,10 +3,18 @@ import numpy as np
 import json
 
 
-def camera_initialisation(cameraID = 0, imageWidth = 1920, imageHight = 1080):
-    global camera, newcameramtx, camera_matrix, dist_coefs, detector
 
-    f = open("Aruco_and_calibration/charuco_board_calibration.json")
+def fromArucIDtoIndex(id, arucoIdDictionary):
+    if id in arucoIdDictionary.keys():
+        return (arucoIdDictionary[id])
+    else:
+        arucoIdDictionary[id] = len(arucoIdDictionary.keys())
+        return (arucoIdDictionary[id])
+
+def camera_initialisation(cameraID = 0, imageWidth = 1920, imageHight = 1080):
+    global camera, newcameramtx, camera_matrix, dist_coefs, detector, arucoDict, arucoParams
+
+    f = open("data.json")
     data = json.load(f)
 
     camera_matrix = np.array(data["camera_matrix"])
@@ -29,12 +37,22 @@ def video_capture():
     imgToProduse = gray
 
 def markers_detection():
-    (corners, ids, rejected) = detector.detectMarkers(imgToProduse)
+    arucoIdDictionary = {}
+    rvecDictionary = {}
+    tvecDictionary = {}
+    corners, ids, rejected = cv2.aruco.detectMarkers(imgToProduse, arucoDict, parameters=arucoParams)
+    
     if ids is not None:
-        rvec, tvec, _objPoints = cv2.aruco.estimatePoseSingleMarkers(corners, 0.025, camera_matrix, dist_coefs)
-        cv2.drawFrameAxes(img, camera_matrix, dist_coefs, rvec, tvec, length=0.025)
-        return ids, rvec, tvec
+        for i in range(len(ids)):
+            index = fromArucIDtoIndex(ids[i][0], arucoIdDictionary)
+            rvec, tvec, _objPoints = cv2.aruco.estimatePoseSingleMarkers(corners[index], 0.025, camera_matrix, dist_coefs)
+            cv2.drawFrameAxes(img, camera_matrix, dist_coefs, rvec, tvec, length=0.025)
+            tvecDictionary[index] = tvec
+            rvecDictionary[index] = rvec
+            cv2.putText(img, str(ids[i][0]),(int(corners[index][0][0][0]), int(corners[index][0][0][1])), cv2.FONT_HERSHEY_SIMPLEX, 0.5, (0, 0, 255), 2)
         cv2.aruco.drawDetectedMarkers(img, corners)
+    
+    return ids, arucoIdDictionary, rvecDictionary, tvecDictionary
 
 def imgDrawing(imageWidth = 720, imageHight = 480):
 
