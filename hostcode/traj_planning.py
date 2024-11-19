@@ -47,7 +47,7 @@ def SolFinder(tvec, trans_matrix, const_orient=True, q=robot.qr):
         return sol[0]
     else:
         print("trouble")
-        return robot.q
+        return None
 
 
 def chekTaskPresessing(tvec, sol, q):
@@ -84,7 +84,9 @@ def jtrajFromCurToGiven(qFinish, travel_time = 3):
     step = 50
     step_time = travel_time / step
     time_vec = np.arange(0, travel_time, step_time)
-    sol = rtb.tools.trajectory.jtraj(robot.q, qFinish, time_vec)
+    sol = None
+    if qFinish is not None:
+        sol = rtb.tools.trajectory.jtraj(robot.q, qFinish, time_vec)
     return sol
 
 def ctrajFromCurToGiven(qFinish, time = 4):

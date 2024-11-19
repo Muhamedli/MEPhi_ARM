@@ -63,8 +63,7 @@ def sendTraj(traj):
         serialRead()
     ser.write(bytes("101a", 'utf-8'))
     serialRead()
-    # for i in range(len(traj.q)-1):
-    #     serialRead(False)
-    #     tk.robot.q = traj.q[i]
-    #     tk.env.step(tk.step_time)
+    for i in range(len(traj.q)-1):
+        tk.robot.q = traj.q[i]
+        tk.env.step(tk.step_time)
     serialRead()

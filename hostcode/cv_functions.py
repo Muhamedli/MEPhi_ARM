@@ -2,15 +2,6 @@ import cv2
 import numpy as np
 import json
 
-
-
-def fromArucIDtoIndex(id, arucoIdDictionary):
-    if id in arucoIdDictionary.keys():
-        return (arucoIdDictionary[id])
-    else:
-        arucoIdDictionary[id] = len(arucoIdDictionary.keys())
-        return (arucoIdDictionary[id])
-
 def camera_initialisation(cameraID = 0, imageWidth = 1920, imageHight = 1080):
     global camera, newcameramtx, camera_matrix, dist_coefs, detector, arucoDict, arucoParams
 
@@ -30,29 +21,31 @@ def camera_initialisation(cameraID = 0, imageWidth = 1920, imageHight = 1080):
     detector = cv2.aruco.ArucoDetector(arucoDict, arucoParams)
 
 def video_capture():
-    global img, imgToProduse
+    global img, imgToProduse, gray
 
     good, img = camera.read()
     gray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
     imgToProduse = gray
 
 def markers_detection():
-    arucoIdDictionary = {}
-    rvecDictionary = {}
     tvecDictionary = {}
+    transMatrixDictionary = {}
     corners, ids, rejected = cv2.aruco.detectMarkers(imgToProduse, arucoDict, parameters=arucoParams)
     
+    
     if ids is not None:
+        ids = list(map(lambda x: x[0], ids))
         for i in range(len(ids)):
-            index = fromArucIDtoIndex(ids[i][0], arucoIdDictionary)
-            rvec, tvec, _objPoints = cv2.aruco.estimatePoseSingleMarkers(corners[index], 0.025, camera_matrix, dist_coefs)
-            cv2.drawFrameAxes(img, camera_matrix, dist_coefs, rvec, tvec, length=0.025)
-            tvecDictionary[index] = tvec
-            rvecDictionary[index] = rvec
-            cv2.putText(img, str(ids[i][0]),(int(corners[index][0][0][0]), int(corners[index][0][0][1])), cv2.FONT_HERSHEY_SIMPLEX, 0.5, (0, 0, 255), 2)
+            rvec, tvec, _objPoints = cv2.aruco.estimatePoseSingleMarkers(corners[i], 0.025, camera_matrix, dist_coefs)
+            cv2.drawFrameAxes(img, camera_matrix, dist_coefs, rvec, tvec, length=0.1)
+
+            tvecDictionary[ids[i]] = tvec[0][0]
+            transMatrixDictionary[ids[i]] = cv2.Rodrigues(rvec)[0]
+            
+            cv2.putText(img, str(ids[i]),(int(corners[i][0][0][0]), int(corners[i][0][0][1])), cv2.FONT_HERSHEY_SIMPLEX, 0.5, (0, 0, 255), 2)
         cv2.aruco.drawDetectedMarkers(img, corners)
     
-    return ids, arucoIdDictionary, rvecDictionary, tvecDictionary
+    return ids, transMatrixDictionary, tvecDictionary
 
 def imgDrawing(imageWidth = 720, imageHight = 480):
 
@@ -60,4 +53,3 @@ def imgDrawing(imageWidth = 720, imageHight = 480):
     cv2.resizeWindow("Object_detection", width=imageWidth, height=imageHight)
     cv2.imshow("Object_detection", img)
     cv2.waitKey(1)
-

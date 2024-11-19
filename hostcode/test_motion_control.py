@@ -3,7 +3,7 @@ import serial_port as sp
 import time
 import numpy as np
 
-sp.serialBegin(port = 5,baytrate = 115200)
+sp.serialBegin(port = 6,baytrate = 115200)
 
 traj = tk.jtrajFromCurToGiven(tk.robot.qr)
 sp.sendTraj(traj)
