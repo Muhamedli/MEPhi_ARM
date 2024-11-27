@@ -30,6 +30,8 @@ def imgProdussing():
 
 
 def trajectoryPlanning(ids, tvecDict, transMatrixDict):
+
+    drop_pose = tk.SolFinder(np.array([0.3,0.1,-0.3]), np.eye(3), q = tk.robot.qr)
     
     tvecsTraj = None
     tMatrixTraj = None
@@ -39,8 +41,11 @@ def trajectoryPlanning(ids, tvecDict, transMatrixDict):
         for id in ids:
             for tvec in tvecDict[id]:
                 tvecsTraj.append(tvec-tvecsTraj[-1])
+                tvecsTraj.append(tk.FromQtoVec(drop_pose)[0] - tvec)
             for tMatrix in transMatrixDict[id]:
-                tMatrixTraj.append(np.linalg.inv(np.array(tMatrix)).dot(np.array(tMatrixTraj[-1])))
+                tMatrixTraj.append(np.linalg.inv(tMatrix))
+                tMatexesTraj.append(tMatrix)
+
 
         tvecsTraj = tvecsTraj[1:]
 

@@ -39,8 +39,13 @@ def markers_detection():
             rvec, tvec, _objPoints = cv2.aruco.estimatePoseSingleMarkers(corners[i], 0.025, camera_matrix, dist_coefs)
             cv2.drawFrameAxes(img, camera_matrix, dist_coefs, rvec, tvec, length=0.1)
 
-            tvecDictionary[ids[i]] = tvec[0][0]
-            transMatrixDictionary[ids[i]] = cv2.Rodrigues(rvec)[0]
+
+            if ids[i] not in tvecDictionary:
+                tvecDictionary[ids[i]] = [tvec[0][0]]
+                transMatrixDictionary[ids[i]] = [cv2.Rodrigues(rvec)[0]]
+            else:
+                tvecDictionary[ids[i]].append(tvec[0][0])
+                transMatrixDictionary[ids[i]].append(cv2.Rodrigues(rvec)[0])
             
             cv2.putText(img, str(ids[i]),(int(corners[i][0][0][0]), int(corners[i][0][0][1])), cv2.FONT_HERSHEY_SIMPLEX, 0.5, (0, 0, 255), 2)
         cv2.aruco.drawDetectedMarkers(img, corners)
