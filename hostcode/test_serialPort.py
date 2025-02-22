@@ -2,7 +2,7 @@ import traj_planning as tk
 import serial_port as sp
 import time
 
-sp.serialBegin(baytrate = 115200)
+sp.serialBegin(port = 3,baytrate = 115200)
 
 # traj = tk.trajFromCurToGiven(tk.robot.qr)
 # sp.sendTraj(traj)
@@ -11,7 +11,7 @@ sp.serialBegin(baytrate = 115200)
 # sp.sendTraj(traj)
 
 #ЕБАНЫЕ радианы!!!
-deg = [0.0, 0.0, 0.0, 0.0, 0.0, -0.15]
+deg = [0.0, 0.0, 0.0, 0.0, 0.0, 0.075]
 speed = [0.5] * 6
 
 sp.serialSend(deg, speed)

@@ -81,7 +81,7 @@ def FromQtoVec(qBeg, qEnd):
 def jtrajFromCurToGiven(qFinish, travel_time = 3):
     global step_time
 
-    step = 50
+    step = 100
     step_time = travel_time / step
     time_vec = np.arange(0, travel_time, step_time)
     sol = None
